@@ -174,4 +174,10 @@ typedef NS_ENUM(NSInteger, ADClusterBufferSize) {
 @property (assign, nonatomic) CGSize clusterAnnotationViewSize;
 
 
+/**
+ Turn on delegate call userDidPanMapView:
+ */
+@property (assign, nonatomic) BOOL monitorMapPan;
+
+
 @end

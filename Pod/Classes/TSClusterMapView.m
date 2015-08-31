@@ -26,7 +26,6 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 //Clustering
 @property (nonatomic, strong) ADMapCluster *rootMapCluster;
 
-@property (nonatomic, strong) NSMutableSet *clusterAnnotationsPool;
 @property (nonatomic, strong) NSMutableSet *clusterableAnnotationsAdded;
 
 @property (nonatomic, assign) MKMapRect previousVisibleMapRectClustered;
@@ -39,9 +38,24 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 @property (nonatomic, readonly) NSSet *clusterAnnotations;
 
+@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
+
 @end
 
+static NSMutableSet *_clusterAnnotationsPool;
+
 @implementation TSClusterMapView
+
+- (NSMutableSet *)clusterAnnotationsPool {
+    
+    static dispatch_once_t once;
+    
+    dispatch_once(&once, ^{
+                      _clusterAnnotationsPool = [NSMutableSet new];
+                  });
+    
+    return _clusterAnnotationsPool;
+}
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -75,11 +89,22 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     _clusterAnimationOptions = [TSClusterAnimationOptions defaultOptions];
     _annotationViewCache = [[NSCache alloc] init];
+}
+
+- (void)setMonitorMapPan:(BOOL)monitorMapPan {
     
-    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                                    action:@selector(didPanMap:)];
-    [panRecognizer setDelegate:self];
-    [self addGestureRecognizer:panRecognizer];
+    _monitorMapPan = monitorMapPan;
+    
+    if (_panRecognizer) {
+        [self removeGestureRecognizer:_panRecognizer];
+    }
+    
+    if (monitorMapPan) {
+        _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                 action:@selector(didPanMap:)];
+        [_panRecognizer setDelegate:self];
+        [self addGestureRecognizer:_panRecognizer];
+    }
 }
 
 - (void)didMoveToSuperview {
@@ -396,7 +421,8 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 #pragma mark - UIGestureRecognizerDelegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
+    
+    return _monitorMapPan;
 }
 
 - (void)didPanMap:(UIGestureRecognizer*)gestureRecognizer {
@@ -486,8 +512,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     NSArray *toAdd;
     
-    if (!_clusterAnnotationsPool) {
-        _clusterAnnotationsPool = [[NSMutableSet alloc] initWithCapacity:numberOfAnnotationsInPool];
+    if (![self clusterAnnotationsPool].count) {
         for (int i = 0; i < numberOfAnnotationsInPool; i++) {
             ADClusterAnnotation * annotation = [[ADClusterAnnotation alloc] init];
             [_clusterAnnotationsPool addObject:annotation];
@@ -650,7 +675,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         clusterAnnotation = view.annotation;
         isClusterAnnotation = clusterAnnotation.type == ADClusterAnnotationTypeCluster;
     }
-	
+    
     if (_clusterZoomsOnTap && isClusterAnnotation){
         [self deselectAnnotation:view.annotation animated:NO];
     }
@@ -759,7 +784,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return delegateAnnotationView;
 }
 
-#pragma mark - Touch Event 
+#pragma mark - Touch Event
 
 //Annotation selection is a touch down event. This will simulate a touch up inside selection of annotation for zoomOnTap
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -767,52 +792,52 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     
     if (_clusterZoomsOnTap){
-    for (UITouch *touch in touches) {
-        
-        TSClusterAnnotationView *view = [self clusterAnnotationForSubview:touch.view];
-        
-        if (view) {
-            ADClusterAnnotation *clusterAnnotation = view.annotation;
-            BOOL isClusterAnnotation = clusterAnnotation.type == ADClusterAnnotationTypeCluster;
+        for (UITouch *touch in touches) {
             
-            //Mapview seems to have a limit on set visible map rect let's manually split if we can't zoom anymore
-            if (isClusterAnnotation) {
-                if(self.camera.altitude < 500) {
+            TSClusterAnnotationView *view = [self clusterAnnotationForSubview:touch.view];
+            
+            if (view) {
+                ADClusterAnnotation *clusterAnnotation = view.annotation;
+                BOOL isClusterAnnotation = clusterAnnotation.type == ADClusterAnnotationTypeCluster;
+                
+                //Mapview seems to have a limit on set visible map rect let's manually split if we can't zoom anymore
+                if (isClusterAnnotation) {
+                    if(self.camera.altitude < 500) {
+                        [self deselectAnnotation:view.annotation animated:NO];
+                        [self splitClusterToOriginal:clusterAnnotation.cluster];
+                        return;
+                    }
                     [self deselectAnnotation:view.annotation animated:NO];
-                    [self splitClusterToOriginal:clusterAnnotation.cluster];
-                    return;
-                }
-                [self deselectAnnotation:view.annotation animated:NO];
-                
-                MKMapRect zoomTo = ((ADClusterAnnotation *)view.annotation).cluster.mapRect;
-                zoomTo = [self mapRectThatFits:zoomTo edgePadding:UIEdgeInsetsMake(view.frame.size.height, view.frame.size.width, view.frame.size.height, view.frame.size.width)];
-                
-                if (MKMapRectSizeIsGreaterThanOrEqual(zoomTo, self.visibleMapRect)) {
-                    zoomTo = MKMapRectInset(zoomTo, zoomTo.size.width/4, zoomTo.size.width/4);
-                }
-                
-                MKCoordinateRegion region = MKCoordinateRegionForMapRect(zoomTo);
-                
-                if (zoomTo.size.width < 3000) {
                     
-                    float ratio = self.camera.altitude/self.visibleMapRect.size.width;
+                    MKMapRect zoomTo = ((ADClusterAnnotation *)view.annotation).cluster.mapRect;
+                    zoomTo = [self mapRectThatFits:zoomTo edgePadding:UIEdgeInsetsMake(view.frame.size.height, view.frame.size.width, view.frame.size.height, view.frame.size.width)];
                     
-                    float altitude = ratio*zoomTo.size.width;
-                    if (altitude < 280) {
-                        altitude = 280;
+                    if (MKMapRectSizeIsGreaterThanOrEqual(zoomTo, self.visibleMapRect)) {
+                        zoomTo = MKMapRectInset(zoomTo, zoomTo.size.width/4, zoomTo.size.width/4);
                     }
                     
-                    MKMapCamera *camera = [self.camera copy];
-                    camera.altitude = altitude;
-                    camera.centerCoordinate = region.center;
-                    [self setCamera:camera animated:YES];
-                }
-                else {
-                    [self setRegion:region animated:YES];
+                    MKCoordinateRegion region = MKCoordinateRegionForMapRect(zoomTo);
+                    
+                    if (zoomTo.size.width < 3000) {
+                        
+                        float ratio = self.camera.altitude/self.visibleMapRect.size.width;
+                        
+                        float altitude = ratio*zoomTo.size.width;
+                        if (altitude < 280) {
+                            altitude = 280;
+                        }
+                        
+                        MKMapCamera *camera = [self.camera copy];
+                        camera.altitude = altitude;
+                        camera.centerCoordinate = region.center;
+                        [self setCamera:camera animated:YES];
+                    }
+                    else {
+                        [self setRegion:region animated:YES];
+                    }
                 }
             }
         }
-    }
     }
 }
 

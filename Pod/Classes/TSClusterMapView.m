@@ -31,6 +31,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 @property (nonatomic, assign) MKMapRect previousVisibleMapRectClustered;
 
 @property (nonatomic, strong) NSOperationQueue *clusterOperationQueue;
+@property (nonatomic, strong) NSOperationQueue *preClusterOperationQueue;
 
 @property (nonatomic, strong) NSCache *annotationViewCache;
 
@@ -51,8 +52,8 @@ static NSMutableSet *_clusterAnnotationsPool;
     static dispatch_once_t once;
     
     dispatch_once(&once, ^{
-                      _clusterAnnotationsPool = [NSMutableSet new];
-                  });
+        _clusterAnnotationsPool = [NSMutableSet new];
+    });
     
     return _clusterAnnotationsPool;
 }
@@ -78,6 +79,10 @@ static NSMutableSet *_clusterAnnotationsPool;
 - (void)initHelpers {
     
     [self setDefaults];
+    
+    _preClusterOperationQueue = [[NSOperationQueue alloc] init];
+    [_preClusterOperationQueue setMaxConcurrentOperationCount:1];
+    [_preClusterOperationQueue setName:@"Pre Clustering Queue"];
     
     _clusterOperationQueue = [[NSOperationQueue alloc] init];
     [_clusterOperationQueue setMaxConcurrentOperationCount:1];
@@ -512,7 +517,7 @@ static NSMutableSet *_clusterAnnotationsPool;
     
     NSArray *toAdd;
     
-    if (![self clusterAnnotationsPool].count) {
+    if (!self.clusterAnnotationsPool.count) {
         for (int i = 0; i < numberOfAnnotationsInPool; i++) {
             ADClusterAnnotation * annotation = [[ADClusterAnnotation alloc] init];
             [_clusterAnnotationsPool addObject:annotation];
@@ -567,52 +572,59 @@ static NSMutableSet *_clusterAnnotationsPool;
         _previousVisibleMapRectClustered = MKMapRectNull;
     }
     
-    //Create buffer room for map drag outside visible rect before next regionDidChange
-    MKMapRect clusteredMapRect = [self visibleMapRectWithBuffer:_clusterEdgeBufferSize];
     
-    if (_clusterEdgeBufferSize) {
-        if (!MKMapRectIsNull(_previousVisibleMapRectClustered) &&
-            !MKMapRectIsEmpty(_previousVisibleMapRectClustered)) {
-            
-            //did the map pan far enough or zoom? Compare to rounded size as decimals fluctuate
-            MKMapRect halfBufferRect = MKMapRectInset(_previousVisibleMapRectClustered, (_previousVisibleMapRectClustered.size.width - self.visibleMapRect.size.width)/4, (_previousVisibleMapRectClustered.size.height - self.visibleMapRect.size.height)/4);
-            if (MKMapRectSizeIsEqual(clusteredMapRect, _previousVisibleMapRectClustered) &&
-                MKMapRectContainsRect(halfBufferRect, self.visibleMapRect)
-                ) {
-                return;
+    [_preClusterOperationQueue addOperationWithBlock:^{
+        
+        //Create buffer room for map drag outside visible rect before next regionDidChange
+        MKMapRect clusteredMapRect = [self visibleMapRectWithBuffer:_clusterEdgeBufferSize];
+        
+        if (_clusterEdgeBufferSize) {
+            if (!MKMapRectIsNull(_previousVisibleMapRectClustered) &&
+                !MKMapRectIsEmpty(_previousVisibleMapRectClustered)) {
+                
+                //did the map pan far enough or zoom? Compare to rounded size as decimals fluctuate
+                MKMapRect halfBufferRect = MKMapRectInset(_previousVisibleMapRectClustered, (_previousVisibleMapRectClustered.size.width - self.visibleMapRect.size.width)/4, (_previousVisibleMapRectClustered.size.height - self.visibleMapRect.size.height)/4);
+                if (MKMapRectSizeIsEqual(clusteredMapRect, _previousVisibleMapRectClustered) &&
+                    MKMapRectContainsRect(halfBufferRect, self.visibleMapRect)
+                    ) {
+                    return;
+                }
             }
         }
-    }
-    
-    [self initAnnotationPools:[self numberOfClusters]];
-    
-    [_clusterOperationQueue cancelAllOperations];
-    
-    [self mapViewWillBeginClusteringAnimation:self];
-    
-    __weak TSClusterMapView *weakSelf = self;
-    TSClusterOperation *operation = [TSClusterOperation mapView:self
-                                                           rect:clusteredMapRect
-                                                    rootCluster:_rootMapCluster
-                                           showNumberOfClusters:[self numberOfClusters]
-                                             clusterAnnotations:self.clusterAnnotationsPool
-                                                     completion:^(MKMapRect clusteredRect, BOOL finished, NSSet *poolAnnotationsToRemove) {
-                                                         
-                                                         TSClusterMapView *strongSelf = weakSelf;
-                                                         
-                                                         [strongSelf poolAnnotationsToRemove:poolAnnotationsToRemove];
-                                                         
-                                                         if (finished) {
-                                                             strongSelf.previousVisibleMapRectClustered = clusteredRect;
+        
+        [self initAnnotationPools:[self numberOfClusters]];
+        
+        [_clusterOperationQueue cancelAllOperations];
+        
+        [self mapViewWillBeginClusteringAnimation:self];
+        
+        __weak TSClusterMapView *weakSelf = self;
+        TSClusterOperation *operation = [TSClusterOperation mapView:self
+                                                               rect:clusteredMapRect
+                                                        rootCluster:_rootMapCluster
+                                               showNumberOfClusters:[self numberOfClusters]
+                                                 clusterAnnotations:self.clusterAnnotationsPool
+                                                         completion:^(MKMapRect clusteredRect, BOOL finished, NSSet *poolAnnotationsToRemove) {
                                                              
-                                                             [strongSelf mapViewDidFinishClusteringAnimation:strongSelf];
-                                                         }
-                                                         else {
-                                                             [strongSelf mapViewDidCancelClusteringAnimation:strongSelf];
-                                                         }
-                                                     }];
-    [_clusterOperationQueue addOperation:operation];
-    [_clusterOperationQueue setSuspended:NO];
+                                                             TSClusterMapView *strongSelf = weakSelf;
+                                                             
+                                                             
+                                                             [_preClusterOperationQueue addOperationWithBlock:^{
+                                                                 [strongSelf poolAnnotationsToRemove:poolAnnotationsToRemove];
+                                                             }];
+                                                             
+                                                             if (finished) {
+                                                                 strongSelf.previousVisibleMapRectClustered = clusteredRect;
+                                                                 
+                                                                 [strongSelf mapViewDidFinishClusteringAnimation:strongSelf];
+                                                             }
+                                                             else {
+                                                                 [strongSelf mapViewDidCancelClusteringAnimation:strongSelf];
+                                                             }
+                                                         }];
+        [_clusterOperationQueue addOperation:operation];
+        [_clusterOperationQueue setSuspended:NO];
+    }];
 }
 
 - (void)poolAnnotationsToRemove:(NSSet *)remove {

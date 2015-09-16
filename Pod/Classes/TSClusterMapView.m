@@ -45,6 +45,10 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 @end
 
+
+@implementation TSClusterMapView
+
+
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     self = [super initWithCoder:coder];

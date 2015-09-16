@@ -626,7 +626,10 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         return;
     }
     
-    [super removeAnnotations:remove.allObjects];
+    NSArray *allObjects = remove.allObjects;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [super removeAnnotations:allObjects];
+    }];
     
     [_clusterAnnotationsPool minusSet:remove];
 }
@@ -766,7 +769,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     MKAnnotationView *delegateAnnotationView;
     
     // only leaf clusters have annotations
-    if (((ADClusterAnnotation *)annotation).type == ADClusterAnnotationTypeLeaf && ((ADClusterAnnotation *)annotation).cluster) {
+    if (((ADClusterAnnotation *)annotation).type == ADClusterAnnotationTypeLeaf) {
         annotation = [((ADClusterAnnotation *)annotation).originalAnnotations firstObject];
         if ([_secondaryDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)]) {
             delegateAnnotationView = [_secondaryDelegate mapView:self viewForAnnotation:annotation];

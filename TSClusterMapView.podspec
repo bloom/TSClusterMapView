@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "TSClusterMapView"
-  s.version          = "2.0.8"
+  s.version          = "2.0.9"
   s.summary          = "Animated annotation clustering MKMapView subclass"
   s.description      = <<-DESC
                        This animated annotation clustering MKMapView subclass is based off of ADClusterMapView.

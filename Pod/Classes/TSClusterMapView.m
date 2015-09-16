@@ -71,6 +71,8 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     [self setDefaults];
     
+    _clusterAnnotationsPool = [[NSMutableSet alloc] init];
+    
     _preClusterOperationQueue = [[NSOperationQueue alloc] init];
     [_preClusterOperationQueue setMaxConcurrentOperationCount:1];
     [_preClusterOperationQueue setName:@"Pre Clustering Queue"];

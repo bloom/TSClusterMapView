@@ -39,24 +39,11 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 @property (nonatomic, readonly) NSSet *clusterAnnotations;
 
+@property (strong, nonatomic) NSMutableSet *clusterAnnotationsPool;
+
 @property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
 
 @end
-
-static NSMutableSet *_clusterAnnotationsPool;
-
-@implementation TSClusterMapView
-
-- (NSMutableSet *)clusterAnnotationsPool {
-    
-    static dispatch_once_t once;
-    
-    dispatch_once(&once, ^{
-        _clusterAnnotationsPool = [NSMutableSet new];
-    });
-    
-    return _clusterAnnotationsPool;
-}
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {

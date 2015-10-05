@@ -21,6 +21,7 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
 @interface CDMapViewController ()
 
 @property (strong, nonatomic) NSDate *startTime;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
 
 @end
 

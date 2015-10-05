@@ -182,12 +182,12 @@
         rightAnnotations = [[NSMutableSet alloc] initWithCapacity:annotations.count];
         for (ADMapPointAnnotation * annotation in annotations) {
             const MKMapPoint point = annotation.mapPoint;
-            BOOL positivityConditionOfScalarProduct = YES;
-            if (YES) {
-                positivityConditionOfScalarProduct = (point.x - center.x) * aX + (point.y - center.y) * aY > 0.0;
-            } else {
-                positivityConditionOfScalarProduct = (point.y - center.y) > 0.0;
-            }
+            BOOL positivityConditionOfScalarProduct = (point.x - center.x) * aX + (point.y - center.y) * aY > 0.0;
+//            if () {
+//                positivityConditionOfScalarProduct = (point.x - center.x) * aX + (point.y - center.y) * aY > 0.0;
+//            } else {
+//                positivityConditionOfScalarProduct = (point.y - center.y) > 0.0;
+//            }
             if (positivityConditionOfScalarProduct) {
                 [leftAnnotations addObject:annotation];
             } else {

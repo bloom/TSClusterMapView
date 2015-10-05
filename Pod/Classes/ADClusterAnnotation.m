@@ -9,10 +9,7 @@
 #import "ADClusterAnnotation.h"
 #import "TSRefreshedAnnotationView.h"
 
-
-BOOL ADClusterCoordinate2DIsOffscreen(CLLocationCoordinate2D coord) {
-    return (coord.latitude == kADCoordinate2DOffscreen.latitude && coord.longitude == kADCoordinate2DOffscreen.longitude);
-}
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:(v) options:NSNumericSearch] != NSOrderedAscending)
 
 @implementation ADClusterAnnotation
 
@@ -20,7 +17,7 @@ BOOL ADClusterCoordinate2DIsOffscreen(CLLocationCoordinate2D coord) {
     self = [super init];
     if (self) {
         _cluster = nil;
-        self.coordinate = kADCoordinate2DOffscreen;
+        self.coordinate = [self offscreenCoordinate];
         _shouldBeRemovedAfterAnimation = NO;
         _title = @"Title";
     }
@@ -55,12 +52,29 @@ BOOL ADClusterCoordinate2DIsOffscreen(CLLocationCoordinate2D coord) {
 
 - (void)reset {
     self.cluster = nil;
-    self.coordinate = kADCoordinate2DOffscreen;
+    self.coordinate = [self offscreenCoordinate];
 }
 
 - (void)shouldReset {
     self.cluster = nil;
-    self.coordinatePreAnimation = kADCoordinate2DOffscreen;
+    self.coordinatePreAnimation = [self offscreenCoordinate];
+}
+
+- (CLLocationCoordinate2D)offscreenCoordinate {
+    
+    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(MAXFLOAT, MAXFLOAT);
+    
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        coordinate = CLLocationCoordinate2DMake(85.0, 179.0);
+        // this coordinate puts the annotation on the top right corner of the map. We use this instead of kCLLocationCoordinate2DInvalid so that we don't mess with MapKit's KVO weird behaviour that removes from the map the annotations whose coordinate was set to kCLLocationCoordinate2DInvalid.
+    }
+    
+    return coordinate;
+}
+
+- (BOOL)offscreen {
+    CLLocationCoordinate2D offscreen = [self offscreenCoordinate];
+    return (self.coordinate.latitude == offscreen.latitude && self.coordinate.longitude == offscreen.longitude);
 }
 
 - (NSArray *)originalAnnotations {

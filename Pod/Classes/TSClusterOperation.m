@@ -97,6 +97,10 @@
 
 - (void)clusterInMapRect:(MKMapRect)clusteredMapRect {
     
+    if (!_rootMapCluster.clusterCount) {
+        [self resetAll];
+        return;
+    }
     
     NSUInteger maxNumberOfClusters = _numberOfClusters;
     
@@ -107,7 +111,7 @@
         maxNumberOfClusters = [self calculateNumberByGrid:clusteredMapRect];
     }
     
-    BOOL shouldOverlap = NO;
+    BOOL shouldOverlap = (_mapView.camera.altitude <= 400);
     
     //Try and account for camera pitch which distorts clustering calculations
     if (_mapView.camera.pitch > 50) {
@@ -128,7 +132,7 @@
     //Sort out the current annotations to get an idea of what you're working with
     NSMutableSet *offscreenAnnotations = [[NSMutableSet alloc] initWithCapacity:_annotationPool.count];
     for (ADClusterAnnotation *annotation in _annotationPool) {
-        if (ADClusterCoordinate2DIsOffscreen(annotation.coordinate)) {
+        if (annotation.offscreen) {
             [offscreenAnnotations addObject:annotation];
         }
     }
@@ -381,7 +385,6 @@
                 t = CGAffineTransformTranslate(t, 0, -annotation.annotationView.frame.size.height);
                 annotation.annotationView.transform  = t;
             }
-            annotation.popInAnimation = NO;
         }
         
         //Selected if needed
@@ -399,7 +402,10 @@
                     annotation.coordinate = annotation.cluster.clusterCoordinate;
                     [annotation.annotationView animateView];
                 }
-                annotation.annotationView.transform = CGAffineTransformIdentity;
+                if (annotation.popInAnimation && _mapView.clusterAppearanceAnimated) {
+                    annotation.annotationView.transform = CGAffineTransformIdentity;
+                    annotation.popInAnimation = NO;
+                }
             }
         } completion:^(BOOL finished) {
             
@@ -420,6 +426,15 @@
                 _finishedBlock(clusteredMapRect, YES, toRemove);
             }
         }];
+    }];
+}
+
+- (void)resetAll {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        for (ADClusterAnnotation *annotation in _annotationPool) {
+            [annotation reset];
+        }
     }];
 }
 
@@ -483,13 +498,15 @@
         
         TSClusterAnimationOptions *options = _mapView.clusterAnimationOptions;
         
-        [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions animations:^{
+        [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions  animations:^{
             for (ADClusterAnnotation * annotation in matchedAnnotations) {
                 annotation.coordinate = annotation.cluster.clusterCoordinate;
                 [annotation.annotationView animateView];
                 annotation.annotationView.transform = CGAffineTransformIdentity;
             }
-        } completion:nil];
+        } completion:^(BOOL finished) {
+            
+        }];
     }];
 }
 
@@ -659,7 +676,7 @@
     
     for (ADClusterAnnotation *pin in annotations) {
         
-        if (!pin.cluster) {
+        if (!pin.cluster || pin.type == ADClusterAnnotationTypeCluster) {
             continue;
         }
         

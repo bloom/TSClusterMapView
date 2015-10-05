@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="2h4-6r-fNb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="2h4-6r-fNb">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -135,43 +135,25 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="t7T-3w-Ldr" firstAttribute="top" secondItem="kkO-TM-PwV" secondAttribute="bottom" id="1XQ-Rg-pTg"/>
-                            <constraint firstItem="t7T-3w-Ldr" firstAttribute="top" secondItem="lE3-0p-jFP" secondAttribute="bottom" id="2aZ-RF-Fx6"/>
                             <constraint firstAttribute="trailing" secondItem="BFz-fq-RjB" secondAttribute="trailing" id="7si-cF-KBD"/>
                             <constraint firstAttribute="trailing" secondItem="lE3-0p-jFP" secondAttribute="trailing" id="DhW-o3-ZsL"/>
                             <constraint firstItem="XdT-y2-VGv" firstAttribute="top" secondItem="t7T-3w-Ldr" secondAttribute="bottom" id="LRV-dB-Qeu"/>
-                            <constraint firstItem="Yyq-po-JOS" firstAttribute="top" secondItem="lE3-0p-jFP" secondAttribute="bottom" constant="9" id="RJB-yd-eVS"/>
                             <constraint firstItem="lE3-0p-jFP" firstAttribute="leading" secondItem="deA-x0-VJI" secondAttribute="leading" id="SZU-MP-5zo"/>
-                            <constraint firstItem="Yyq-po-JOS" firstAttribute="top" secondItem="lE3-0p-jFP" secondAttribute="bottom" constant="9" id="TcM-d0-bp2"/>
                             <constraint firstAttribute="trailing" secondItem="kkO-TM-PwV" secondAttribute="trailing" id="TmS-ux-x3g"/>
-                            <constraint firstItem="st3-K2-lqv" firstAttribute="top" secondItem="lE3-0p-jFP" secondAttribute="bottom" id="UXf-ZX-5xg"/>
                             <constraint firstItem="kkO-TM-PwV" firstAttribute="top" secondItem="lE3-0p-jFP" secondAttribute="bottom" constant="42" id="WNm-Kk-PA0"/>
                             <constraint firstItem="kkO-TM-PwV" firstAttribute="top" secondItem="st3-K2-lqv" secondAttribute="bottom" id="XaW-pB-07H"/>
                             <constraint firstItem="kkO-TM-PwV" firstAttribute="top" secondItem="Yyq-po-JOS" secondAttribute="bottom" constant="12" id="YUq-Xc-lAl"/>
                             <constraint firstAttribute="trailing" secondItem="t7T-3w-Ldr" secondAttribute="trailing" id="YW6-48-4Zt"/>
                             <constraint firstItem="BFz-fq-RjB" firstAttribute="top" secondItem="deA-x0-VJI" secondAttribute="top" id="eUd-g3-hkf"/>
                             <constraint firstItem="Yyq-po-JOS" firstAttribute="trailing" secondItem="deA-x0-VJI" secondAttribute="trailingMargin" id="hJk-ed-W99"/>
-                            <constraint firstAttribute="trailing" secondItem="lE3-0p-jFP" secondAttribute="trailing" id="jWV-va-TzU"/>
                             <constraint firstAttribute="trailing" secondItem="st3-K2-lqv" secondAttribute="trailing" id="kb7-k7-KAV"/>
                             <constraint firstItem="kkO-TM-PwV" firstAttribute="top" secondItem="st3-K2-lqv" secondAttribute="bottom" id="l8O-5T-EnL"/>
                             <constraint firstItem="lE3-0p-jFP" firstAttribute="top" secondItem="BFz-fq-RjB" secondAttribute="bottom" id="lMd-YB-Cjp"/>
                             <constraint firstItem="kkO-TM-PwV" firstAttribute="leading" secondItem="deA-x0-VJI" secondAttribute="leading" id="pnd-PQ-GJR"/>
                             <constraint firstItem="st3-K2-lqv" firstAttribute="leading" secondItem="deA-x0-VJI" secondAttribute="leading" id="qL0-8g-XCX"/>
-                            <constraint firstItem="lE3-0p-jFP" firstAttribute="leading" secondItem="deA-x0-VJI" secondAttribute="leading" id="sAZ-NB-urX"/>
                             <constraint firstItem="BFz-fq-RjB" firstAttribute="leading" secondItem="deA-x0-VJI" secondAttribute="leading" id="uFa-dW-I2P"/>
                             <constraint firstItem="t7T-3w-Ldr" firstAttribute="leading" secondItem="deA-x0-VJI" secondAttribute="leading" id="yPn-FM-FK6"/>
-                            <constraint firstItem="XdT-y2-VGv" firstAttribute="top" secondItem="BFz-fq-RjB" secondAttribute="bottom" id="ykZ-b3-E1A"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="jWV-va-TzU"/>
-                                <exclude reference="sAZ-NB-urX"/>
-                                <exclude reference="UXf-ZX-5xg"/>
-                                <exclude reference="2aZ-RF-Fx6"/>
-                                <exclude reference="RJB-yd-eVS"/>
-                                <exclude reference="TcM-d0-bp2"/>
-                                <exclude reference="ykZ-b3-E1A"/>
-                            </mask>
-                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="cpp-TE-B3n">
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="2" id="zVg-tm-hei">
@@ -191,6 +173,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="bathroomTabBarItem" destination="3TL-Jc-YGW" id="loS-8C-fKw"/>
+                        <outlet property="bottomConstraint" destination="lMd-YB-Cjp" id="jBU-6E-m13"/>
                         <outlet property="label" destination="Yyq-po-JOS" id="OCl-TO-LO9"/>
                         <outlet property="mapView" destination="BFz-fq-RjB" id="Ywq-VL-ntq"/>
                         <outlet property="progressView" destination="lE3-0p-jFP" id="rgy-Ju-MhD"/>

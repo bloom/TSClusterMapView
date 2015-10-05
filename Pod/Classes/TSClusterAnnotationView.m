@@ -13,7 +13,6 @@
 @interface TSClusterAnnotationView ()
 
 @property (strong, nonatomic) UIView *contentView;
-@property (weak, nonatomic) MKAnnotationView *addedView;
 
 @end
 
@@ -50,9 +49,7 @@
         self.contentView.frame = annotationView.bounds;
     }
     
-    if (!CGPointEqualToPoint(self.centerOffset, annotationView.centerOffset)) {
-        self.centerOffset = annotationView.centerOffset;
-    }
+    self.centerOffset = annotationView.centerOffset;
     
     [self.contentView addSubview:annotationView];
     
@@ -85,5 +82,18 @@
     }
 }
 
+#pragma mark - Selection
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+	[super setSelected:selected animated:animated];
+	
+	[self.addedView setSelected:selected animated:animated];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    
+    [self.addedView setHighlighted:highlighted];
+}
 
 @end

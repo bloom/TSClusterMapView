@@ -20,5 +20,6 @@
 
 - (void)animateView;
 
+@property (weak, nonatomic, readonly) MKAnnotationView *addedView;
 
 @end

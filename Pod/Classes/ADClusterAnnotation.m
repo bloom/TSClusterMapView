@@ -47,7 +47,7 @@
 - (void)setCoordinate:(CLLocationCoordinate2D)coordinate {
     
     _coordinate = coordinate;
-    _coordinatePreAnimation = kCLLocationCoordinate2DInvalid;
+    self.coordinatePreAnimation = kCLLocationCoordinate2DInvalid;
 }
 
 - (void)reset {
@@ -77,7 +77,7 @@
     return (self.coordinate.latitude == offscreen.latitude && self.coordinate.longitude == offscreen.longitude);
 }
 
-- (NSArray *)originalAnnotations {
+- (NSArray <id<MKAnnotation>> *)originalAnnotations {
     NSAssert(self.cluster != nil, @"This annotation should have a cluster assigned!");
     return self.cluster.originalAnnotations;
 }

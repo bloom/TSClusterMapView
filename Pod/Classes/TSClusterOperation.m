@@ -25,8 +25,8 @@
 
 @property (assign, nonatomic) NSUInteger numberOfClusters;
 @property (assign, nonatomic) MKMapRect clusteringRect;
-@property (nonatomic, strong) NSMutableSet *annotationPool;
-@property (nonatomic, strong) NSMutableSet *poolAnnotationRemoval;
+@property (nonatomic, strong) NSMutableSet <ADClusterAnnotation *> *annotationPool;
+@property (nonatomic, strong) NSMutableSet <ADClusterAnnotation *> *poolAnnotationRemoval;
 
 @property (nonatomic, strong) ADMapCluster *splitCluster;
 
@@ -50,7 +50,7 @@
 
 #pragma mark - Initializers
 
-+ (instancetype)mapView:(TSClusterMapView *)mapView rect:(MKMapRect)rect rootCluster:(ADMapCluster *)rootCluster showNumberOfClusters:(NSUInteger)numberOfClusters clusterAnnotations:(NSSet *)clusterAnnotations completion:(ClusterOperationCompletionBlock)completion {
++ (instancetype)mapView:(TSClusterMapView *)mapView rect:(MKMapRect)rect rootCluster:(ADMapCluster *)rootCluster showNumberOfClusters:(NSUInteger)numberOfClusters clusterAnnotations:(NSSet <ADClusterAnnotation *> *)clusterAnnotations completion:(ClusterOperationCompletionBlock)completion {
     
     return [[TSClusterOperation alloc] initWithMapView:mapView
                                                   rect:rect
@@ -60,7 +60,7 @@
                                             completion:completion];
 }
 
-- (instancetype)initWithMapView:(TSClusterMapView *)mapView rect:(MKMapRect)rect rootCluster:(ADMapCluster *)rootCluster showNumberOfClusters:(NSUInteger)numberOfClusters clusterAnnotations:(NSSet *)clusterAnnotations completion:(ClusterOperationCompletionBlock)completion
+- (instancetype)initWithMapView:(TSClusterMapView *)mapView rect:(MKMapRect)rect rootCluster:(ADMapCluster *)rootCluster showNumberOfClusters:(NSUInteger)numberOfClusters clusterAnnotations:(NSSet <ADClusterAnnotation *> *)clusterAnnotations completion:(ClusterOperationCompletionBlock)completion
 {
     self = [super init];
     if (self) {
@@ -74,14 +74,14 @@
     return self;
 }
 
-+ (instancetype)mapView:(TSClusterMapView *)mapView splitCluster:(ADMapCluster *)splitCluster clusterAnnotationsPool:(NSSet *)clusterAnnotations {
++ (instancetype)mapView:(TSClusterMapView *)mapView splitCluster:(ADMapCluster *)splitCluster clusterAnnotationsPool:(NSSet <ADClusterAnnotation *> *)clusterAnnotations {
     
     return [[TSClusterOperation alloc] initWithMapView:mapView
                                           splitCluster:splitCluster
                                     clusterAnnotations:clusterAnnotations];
 }
 
-- (instancetype)initWithMapView:(TSClusterMapView *)mapView splitCluster:(ADMapCluster *)splitCluster clusterAnnotations:(NSSet *)clusterAnnotations
+- (instancetype)initWithMapView:(TSClusterMapView *)mapView splitCluster:(ADMapCluster *)splitCluster clusterAnnotations:(NSSet <ADClusterAnnotation *> *)clusterAnnotations
 {
     self = [super init];
     if (self) {
@@ -111,7 +111,7 @@
         maxNumberOfClusters = [self calculateNumberByGrid:clusteredMapRect];
     }
     
-    BOOL shouldOverlap = (_mapView.camera.altitude <= 400);
+    BOOL shouldOverlap = NO;//(_mapView.camera.altitude <= 400);
     
     //Try and account for camera pitch which distorts clustering calculations
     if (_mapView.camera.pitch > 50) {
@@ -130,37 +130,37 @@
     }
     
     //Sort out the current annotations to get an idea of what you're working with
-    NSMutableSet *offscreenAnnotations = [[NSMutableSet alloc] initWithCapacity:_annotationPool.count];
+    NSMutableSet <ADClusterAnnotation *> *offscreenAnnotations = [[NSMutableSet alloc] initWithCapacity:_annotationPool.count];
     for (ADClusterAnnotation *annotation in _annotationPool) {
         if (annotation.offscreen) {
             [offscreenAnnotations addObject:annotation];
         }
     }
     
-    NSMutableSet *unmatchedAnnotations = [[NSMutableSet alloc] initWithCapacity:_annotationPool.count];
+    NSMutableSet <ADClusterAnnotation *> *unmatchedAnnotations = [[NSMutableSet alloc] initWithCapacity:_annotationPool.count];
     for (ADClusterAnnotation *annotation in _annotationPool) {
         if (!annotation.cluster) {
             [unmatchedAnnotations addObject:annotation];
         }
     }
     
-    NSMutableSet *matchedAnnotations = [[NSMutableSet alloc] initWithSet:_annotationPool];
+    NSMutableSet <ADClusterAnnotation *> *matchedAnnotations = [[NSMutableSet alloc] initWithSet:_annotationPool];
     [matchedAnnotations minusSet:unmatchedAnnotations];
     
     
     //
-    NSMutableSet *unMatchedClusters = [[NSMutableSet alloc] initWithSet:clustersToShowOnMap];
+    NSMutableSet <ADMapCluster *> *unMatchedClusters = [[NSMutableSet alloc] initWithSet:clustersToShowOnMap];
     
     //There will be only one annotation after clustering in so we want to know if the parent cluster was already matched to an annotation
-    NSMutableSet *parentClustersMatched = [[NSMutableSet alloc] initWithCapacity:_numberOfClusters];
+    NSMutableSet <ADMapCluster *> *parentClustersMatched = [[NSMutableSet alloc] initWithCapacity:_numberOfClusters];
     
     //These will be the annotations that converge to a point and will no longer be needed
-    NSMutableSet *removeAfterAnimation = [[NSMutableSet alloc] initWithCapacity:_numberOfClusters];
+    NSMutableSet <ADClusterAnnotation *> *removeAfterAnimation = [[NSMutableSet alloc] initWithCapacity:_numberOfClusters];
     
     //These will be leftovers that didn't have any annotations available to match at the time.
     //Some annotations should become free after further sorting and matching.
     //At the end any unmatched annotations will be used.
-    NSMutableSet *stillNeedsMatch = [[NSMutableSet alloc] initWithCapacity:10];
+    NSMutableSet <NSArray *> *stillNeedsMatch = [[NSMutableSet alloc] initWithCapacity:10];
     
     if (self.isCancelled) {
         if (_finishedBlock) {
@@ -172,7 +172,7 @@
     //Go through annotations that already have clusters and try and match them to new clusters
     for (ADClusterAnnotation *annotation in matchedAnnotations) {
         
-        NSMutableSet *children = [annotation.cluster findChildrenForClusterInSet:clustersToShowOnMap];
+        NSMutableSet <ADMapCluster *> *children = [annotation.cluster findChildrenForClusterInSet:clustersToShowOnMap];
         
         //Found children
         //These will start at cluster and split to their respective cluster coordinates
@@ -248,7 +248,7 @@
         //Don't want annotations flying across the map
         CLLocationDistance min = MKMetersBetweenMapPoints(eastMapPoint, westMapPoint)/2;
         
-        NSMutableSet *unmatchedOnScreen = [NSMutableSet setWithSet:unmatchedAnnotations];
+        NSMutableSet <ADClusterAnnotation *> *unmatchedOnScreen = [NSMutableSet setWithSet:unmatchedAnnotations];
         [unmatchedOnScreen minusSet:offscreenAnnotations];
         for (ADClusterAnnotation *checkAnnotation in unmatchedOnScreen) {
             
@@ -312,8 +312,14 @@
         NSLog(@"Unmatched Clusters!?");
     }
     
+    for (ADClusterAnnotation * annotation in _annotationPool) {
+        if (annotation.cluster) {
+            annotation.coordinatePostAnimation = annotation.cluster.clusterCoordinate;
+        }
+    }
+    
     //Create a circle around coordinate to display all single annotations that overlap
-    [TSClusterOperation mutateCoordinatesOfClashingAnnotations:matchedAnnotations];
+    [self mutateCoordinatesOfClashingAnnotations:matchedAnnotations];
     
     
     ADClusterAnnotation *selectedAnnotation = [_mapView.selectedAnnotations firstObject];
@@ -399,7 +405,7 @@
         [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions animations:^{
             for (ADClusterAnnotation * annotation in _annotationPool) {
                 if (annotation.cluster) {
-                    annotation.coordinate = annotation.cluster.clusterCoordinate;
+                    annotation.coordinate = annotation.coordinatePostAnimation;
                     [annotation.annotationView animateView];
                 }
                 if (annotation.popInAnimation && _mapView.clusterAppearanceAnimated) {
@@ -478,8 +484,12 @@
         [matchedAnnotations addObject:annotation];
     }
     
+    for (ADClusterAnnotation * annotation in matchedAnnotations) {
+        annotation.coordinatePostAnimation = annotation.cluster.clusterCoordinate;
+    }
+    
     //Create a circle around coordinate to display all single annotations that overlap
-    [TSClusterOperation mutateCoordinatesOfClashingAnnotations:matchedAnnotations];
+    [self mutateCoordinatesOfClashingAnnotations:matchedAnnotations];
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         
@@ -500,9 +510,13 @@
         
         [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions  animations:^{
             for (ADClusterAnnotation * annotation in matchedAnnotations) {
-                annotation.coordinate = annotation.cluster.clusterCoordinate;
+                annotation.coordinate = annotation.coordinatePostAnimation;
                 [annotation.annotationView animateView];
-                annotation.annotationView.transform = CGAffineTransformIdentity;
+                
+                if (annotation.popInAnimation && _mapView.clusterAppearanceAnimated) {
+                    annotation.annotationView.transform = CGAffineTransformIdentity;
+                    annotation.popInAnimation = NO;
+                }
             }
         } completion:^(BOOL finished) {
             
@@ -512,7 +526,7 @@
 
 #pragma mark - Helpers
 
-- (NSSet *)poolAnnotationsToRemove:(NSInteger)numberOfAnnotationsInPool freeAnnotations:(NSSet *)annotations {
+- (NSSet <ADClusterAnnotation *> *)poolAnnotationsToRemove:(NSInteger)numberOfAnnotationsInPool freeAnnotations:(NSSet <ADClusterAnnotation *> *)annotations {
     
     NSInteger difference = _annotationPool.count - (numberOfAnnotationsInPool*2);
     
@@ -616,7 +630,7 @@
 }
 
 
-- (NSSet *)mapRectsFromMaxNumberOfClusters:(NSUInteger)amount mapRect:(MKMapRect)rect {
+- (NSSet <NSDictionary <NSString *, NSNumber *> *> *)mapRectsFromMaxNumberOfClusters:(NSUInteger)amount mapRect:(MKMapRect)rect {
     
     if (amount == 0) {
         return [NSSet setWithObject:[NSDictionary dictionaryFromMapRect:rect]];
@@ -655,22 +669,21 @@
 
 #pragma mark - Spread close annotations
 
-+ (void)mutateCoordinatesOfClashingAnnotations:(NSSet *)annotations {
+- (void)mutateCoordinatesOfClashingAnnotations:(NSSet <ADClusterAnnotation *> *)annotations {
     
-    NSDictionary *coordinateValuesToAnnotations = [self groupAnnotationsByLocationValue:annotations];
+    NSDictionary *coordinateValuesToAnnotations = [TSClusterOperation groupClusterAnnotationsByLocationValue:annotations];
     
     for (NSValue *coordinateValue in coordinateValuesToAnnotations.allKeys) {
         NSMutableArray *outletsAtLocation = coordinateValuesToAnnotations[coordinateValue];
         if (outletsAtLocation.count > 1) {
             CLLocationCoordinate2D coordinate;
             [coordinateValue getValue:&coordinate];
-            [self repositionAnnotations:[[NSMutableSet alloc] initWithArray:outletsAtLocation]
-             toAvoidClashAtCoordination:coordinate];
+            [self repositionAnnotations:outletsAtLocation toAvoidClashAtCoordinate:coordinate];
         }
     }
 }
 
-+ (NSDictionary *)groupAnnotationsByLocationValue:(NSSet *)annotations {
++ (NSDictionary <NSValue *, NSMutableArray <ADClusterAnnotation *> *>*)groupClusterAnnotationsByLocationValue:(NSSet <ADClusterAnnotation *>*)annotations {
     
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     
@@ -694,7 +707,34 @@
     return result;
 }
 
-+ (void)repositionAnnotations:(NSMutableSet *)annotations toAvoidClashAtCoordination:(CLLocationCoordinate2D)coordinate {
+
++ (NSDictionary <NSValue *, NSMutableArray <id<MKAnnotation>> *>*)groupAnnotationsByLocationValue:(NSSet <id<MKAnnotation>>*)annotations {
+    
+    NSMutableDictionary *result = [NSMutableDictionary dictionary];
+    
+    for (id<MKAnnotation> annotation in annotations) {
+        
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DRoundedLonLat(annotation.coordinate, 5);
+        NSValue *coordinateValue = [NSValue valueWithBytes:&coordinate objCType:@encode(CLLocationCoordinate2D)];
+        
+        NSMutableArray *annotationsAtLocation = result[coordinateValue];
+        if (!annotationsAtLocation) {
+            annotationsAtLocation = [NSMutableArray array];
+            result[coordinateValue] = annotationsAtLocation;
+        }
+        
+        [annotationsAtLocation addObject:annotation];
+    }
+    return result;
+}
+
+- (void)repositionAnnotations:(NSArray <ADClusterAnnotation *>*)annotations toAvoidClashAtCoordinate:(CLLocationCoordinate2D)coordinate {
+    
+    if ([_mapView.clusterDelegate respondsToSelector:@selector(mapView:shouldRepositionAnnotations:toAvoidClashAtCoordinate:)]) {
+        if (![_mapView.clusterDelegate mapView:_mapView shouldRepositionAnnotations:annotations toAvoidClashAtCoordinate:coordinate]) {
+            return;
+        }
+    }
     
     double distance = 3 * annotations.count / 2.0;
     double radiansBetweenAnnotations = (M_PI * 2) / annotations.count;
@@ -704,9 +744,9 @@
     for (ADClusterAnnotation *annotation in annotations) {
         
         double heading = radiansBetweenAnnotations * i;
-        CLLocationCoordinate2D newCoordinate = [self calculateCoordinateFrom:coordinate onBearing:heading atDistance:distance];
+        CLLocationCoordinate2D newCoordinate = [TSClusterOperation calculateCoordinateFrom:coordinate onBearing:heading atDistance:distance];
         
-        annotation.cluster.clusterCoordinate = newCoordinate;
+        annotation.coordinatePostAnimation = newCoordinate;
         
         i++;
     }

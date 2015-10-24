@@ -53,7 +53,7 @@ typedef NS_ENUM(NSUInteger, ADClusterAnnotationType) {
 /*!
  * @discussion This array contains the MKAnnotation objects represented by this annotation
  */
-@property (weak, nonatomic, readonly) NSArray * originalAnnotations;
+@property (weak, nonatomic, readonly) NSArray <id<MKAnnotation>> * originalAnnotations;
 
 /*!
  * @discussion Number of annotations represented by the annotation
@@ -71,9 +71,14 @@ typedef NS_ENUM(NSUInteger, ADClusterAnnotationType) {
 @property (nonatomic, assign) BOOL popInAnimation;
 
 /**
- * @discussion Should animate scale to pop in onto map
+ * @discussion Coordinate to position annotation before the animation begins
  */
-@property (nonatomic, assign) CLLocationCoordinate2D coordinatePreAnimation;
+@property (nonatomic) CLLocationCoordinate2D coordinatePreAnimation;
+
+/**
+ * @discussion Coordinate to position annotation after the animation ends
+ */
+@property (nonatomic) CLLocationCoordinate2D coordinatePostAnimation;
 
 /**
  * @discussion Remove cluster and make available or reset after animation

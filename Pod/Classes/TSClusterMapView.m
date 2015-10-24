@@ -21,27 +21,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 @interface TSClusterMapView ()
 
-@property (nonatomic, weak) id <TSClusterMapViewDelegate>  secondaryDelegate;
 
-//Clustering
-@property (nonatomic, strong) ADMapCluster *rootMapCluster;
-
-@property (nonatomic, strong) NSMutableSet *clusterableAnnotationsAdded;
-
-@property (nonatomic, assign) MKMapRect previousVisibleMapRectClustered;
-
-@property (nonatomic, strong) NSOperationQueue *clusterOperationQueue;
-@property (nonatomic, strong) NSOperationQueue *preClusterOperationQueue;
-
-@property (nonatomic, strong) NSCache *annotationViewCache;
-
-@property (nonatomic, strong) NSOperationQueue *treeOperationQueue;
-
-@property (nonatomic, readonly) NSSet *clusterAnnotations;
-
-@property (strong, nonatomic) NSMutableSet *clusterAnnotationsPool;
-
-@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
 
 @end
 
@@ -178,7 +158,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }
 }
 
-- (void)addAnnotations:(NSArray *)annotations {
+- (void)addAnnotations:(NSArray <id<MKAnnotation>> *)annotations {
     
     NSMutableSet *annotationsToAdd = [NSMutableSet setWithArray:annotations];
     [annotationsToAdd minusSet:_clusterableAnnotationsAdded];
@@ -235,7 +215,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }];
 }
 
-- (void)addClusteredAnnotations:(NSArray *)annotations {
+- (void)addClusteredAnnotations:(NSArray <id<MKAnnotation>> *)annotations {
     
     if (!annotations || !annotations.count) {
         return;
@@ -291,7 +271,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     [super removeAnnotation:annotation];
 }
 
-- (void)removeAnnotations:(NSArray *)annotations {
+- (void)removeAnnotations:(NSArray <id<MKAnnotation>> *)annotations {
     
     if (!annotations) {
         return;
@@ -317,7 +297,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     [self cacheAnnotationView:viewToCache];
 }
 
-- (NSArray *)visibleClusterAnnotations {
+- (NSArray <ADClusterAnnotation *> *)visibleClusterAnnotations {
     NSMutableArray * displayedAnnotations = [[NSMutableArray alloc] init];
     for (ADClusterAnnotation * annotation in [_clusterAnnotationsPool copy]) {
         if (!annotation.offscreen) {
@@ -328,7 +308,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return displayedAnnotations;
 }
 
-- (NSArray *)annotations {
+- (NSArray<id<MKAnnotation>> *)annotations {
     
     NSMutableSet *set = [NSMutableSet setWithArray:[super annotations]];
     [set minusSet:self.clusterAnnotations];
@@ -337,7 +317,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return set.allObjects;
 }
 
-- (NSSet *)clusterAnnotations {
+- (NSSet <ADClusterAnnotation *> *)clusterAnnotations {
     
     NSMutableSet *mutableSet = [[NSMutableSet alloc] init];
     for (ADClusterAnnotation *annotation in [super annotations]) {
@@ -439,12 +419,12 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 - (void)setDelegate:(id<TSClusterMapViewDelegate>)delegate {
     /*
      For an undefined reason, setDelegate is called multiple times. The first time, it is called with delegate = nil
-     Therefore _secondaryDelegate may be nil when [_secondaryDelegate respondsToSelector:aSelector] is called (result : NO)
-     There is some caching done in order to avoid calling respondsToSelector: too much. That's why if we don't take care the runtime will guess that we always have [_secondaryDelegate respondsToSelector:] = NO
+     Therefore _clusterDelegate may be nil when [_clusterDelegate respondsToSelector:aSelector] is called (result : NO)
+     There is some caching done in order to avoid calling respondsToSelector: too much. That's why if we don't take care the runtime will guess that we always have [_clusterDelegate respondsToSelector:] = NO
      Therefore we clear the cache by setting the delegate to nil.
      */
     [super setDelegate:nil];
-    _secondaryDelegate = delegate;
+    _clusterDelegate = delegate;
     [super setDelegate:self];
     
     MKAnnotationView *annotationView = [self mapView:self viewForClusterAnnotation:[[ADClusterAnnotation alloc] init]];
@@ -452,13 +432,13 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
-    BOOL respondsToSelector = [super respondsToSelector:aSelector] || [_secondaryDelegate respondsToSelector:aSelector];
+    BOOL respondsToSelector = [super respondsToSelector:aSelector] || [_clusterDelegate respondsToSelector:aSelector];
     return respondsToSelector;
 }
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
-    if ([_secondaryDelegate respondsToSelector:[anInvocation selector]]) {
-        [anInvocation invokeWithTarget:_secondaryDelegate];
+    if ([_clusterDelegate respondsToSelector:[anInvocation selector]]) {
+        [anInvocation invokeWithTarget:_clusterDelegate];
     } else {
         [super forwardInvocation:anInvocation];
     }
@@ -467,7 +447,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 #pragma mark - Clustering
 
-- (void)createKDTreeAndCluster:(NSSet *)annotations {
+- (void)createKDTreeAndCluster:(NSSet <id<MKAnnotation>> *)annotations {
     
     if (!annotations) {
         return;
@@ -543,16 +523,26 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return (!self.superview || self.layer.animationKeys);
 }
 
-- (void)splitClusterToOriginal:(ADMapCluster *)cluster {
+- (void)splitClusterToOriginal:(ADClusterAnnotation *)clusterAnnotation {
     
     if ([self shouldNotAnimate]) {
         return;
     }
     
-    [self initAnnotationPools:[self numberOfClusters]+cluster.clusterCount];
+    NSDictionary *groupedRoundedLatLonAnnotations = [TSClusterOperation groupAnnotationsByLocationValue:[NSSet setWithArray:clusterAnnotation.cluster.originalAnnotations]];
+    
+    if (groupedRoundedLatLonAnnotations.allKeys.count == 1) {
+        if ([_clusterDelegate respondsToSelector:@selector(mapView:shouldForceSplitClusterAnnotation:)]) {
+            if (![_clusterDelegate mapView:self shouldForceSplitClusterAnnotation:clusterAnnotation]) {
+                return;
+            }
+        }
+    }
+    
+    [self initAnnotationPools:[self numberOfClusters]+clusterAnnotation.cluster.clusterCount];
     
     [_clusterOperationQueue cancelAllOperations];
-    [_clusterOperationQueue addOperation:[TSClusterOperation mapView:self splitCluster:cluster clusterAnnotationsPool:_clusterAnnotationsPool]];
+    [_clusterOperationQueue addOperation:[TSClusterOperation mapView:self splitCluster:clusterAnnotation.cluster clusterAnnotationsPool:_clusterAnnotationsPool]];
 }
 
 - (void)clusterVisibleMapRectForceRefresh:(BOOL)isNewCluster {
@@ -620,7 +610,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }];
 }
 
-- (void)poolAnnotationsToRemove:(NSSet *)remove {
+- (void)poolAnnotationsToRemove:(NSSet <id<MKAnnotation>> *)remove {
     
     if (!remove.count) {
         return;
@@ -661,8 +651,8 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:regionWillChangeAnimated:)]) {
-        [_secondaryDelegate mapView:self regionWillChangeAnimated:animated];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:regionWillChangeAnimated:)]) {
+        [_clusterDelegate mapView:self regionWillChangeAnimated:animated];
     }
 }
 
@@ -670,8 +660,8 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     [self clusterVisibleMapRectForceRefresh:NO];
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:regionDidChangeAnimated:)]) {
-        [_secondaryDelegate mapView:self regionDidChangeAnimated:animated];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:regionDidChangeAnimated:)]) {
+        [_clusterDelegate mapView:self regionDidChangeAnimated:animated];
     }
 }
 
@@ -688,29 +678,29 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         [self deselectAnnotation:view.annotation animated:NO];
     }
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:didSelectAnnotationView:)]) {
-        [_secondaryDelegate mapView:mapView didSelectAnnotationView:[self filterInternalView:view]];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:didSelectAnnotationView:)]) {
+        [_clusterDelegate mapView:mapView didSelectAnnotationView:[self filterInternalView:view]];
     }
 }
 
 - (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:didDeselectAnnotationView:)]) {
-        [_secondaryDelegate mapView:mapView didDeselectAnnotationView:[self filterInternalView:view]];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:didDeselectAnnotationView:)]) {
+        [_clusterDelegate mapView:mapView didDeselectAnnotationView:[self filterInternalView:view]];
     }
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:annotationView:calloutAccessoryControlTapped:)]) {
-        [_secondaryDelegate mapView:mapView annotationView:[self filterInternalView:view] calloutAccessoryControlTapped:control];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:annotationView:calloutAccessoryControlTapped:)]) {
+        [_clusterDelegate mapView:mapView annotationView:[self filterInternalView:view] calloutAccessoryControlTapped:control];
     }
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:annotationView:didChangeDragState:fromOldState:)]) {
-        [_secondaryDelegate mapView:mapView annotationView:[self filterInternalView:view] didChangeDragState:newState fromOldState:oldState];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:annotationView:didChangeDragState:fromOldState:)]) {
+        [_clusterDelegate mapView:mapView annotationView:[self filterInternalView:view] didChangeDragState:newState fromOldState:oldState];
     }
 }
 
@@ -742,8 +732,8 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
     if (![annotation isKindOfClass:[ADClusterAnnotation class]]) {
-        if ([_secondaryDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)]) {
-            return [_secondaryDelegate mapView:self viewForAnnotation:annotation];
+        if ([_clusterDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)]) {
+            return [_clusterDelegate mapView:self viewForAnnotation:annotation];
         }
         return nil;
     }
@@ -771,13 +761,13 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     // only leaf clusters have annotations
     if (((ADClusterAnnotation *)annotation).type == ADClusterAnnotationTypeLeaf) {
         annotation = [((ADClusterAnnotation *)annotation).originalAnnotations firstObject];
-        if ([_secondaryDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)]) {
-            delegateAnnotationView = [_secondaryDelegate mapView:self viewForAnnotation:annotation];
+        if ([_clusterDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)]) {
+            delegateAnnotationView = [_clusterDelegate mapView:self viewForAnnotation:annotation];
         }
     }
-    else if (![_secondaryDelegate respondsToSelector:@selector(mapView:viewForClusterAnnotation:)]) {
-        if ([_secondaryDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)]) {
-            delegateAnnotationView = [_secondaryDelegate mapView:self viewForAnnotation:annotation];
+    else if (![_clusterDelegate respondsToSelector:@selector(mapView:viewForClusterAnnotation:)]) {
+        if ([_clusterDelegate respondsToSelector:@selector(mapView:viewForAnnotation:)]) {
+            delegateAnnotationView = [_clusterDelegate mapView:self viewForAnnotation:annotation];
         }
     }
     else {
@@ -795,7 +785,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 #pragma mark - Touch Event
 
 //Annotation selection is a touch down event. This will simulate a touch up inside selection of annotation for zoomOnTap
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesEnded:touches withEvent:event];
     
     
@@ -812,7 +802,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
                 if (isClusterAnnotation) {
                     if(self.camera.altitude < 500) {
                         [self deselectAnnotation:view.annotation animated:NO];
-                        [self splitClusterToOriginal:clusterAnnotation.cluster];
+                        [self splitClusterToOriginal:clusterAnnotation];
                         return;
                     }
                     [self deselectAnnotation:view.annotation animated:NO];
@@ -866,59 +856,59 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 - (MKAnnotationView *)mapView:(TSClusterMapView *)mapView viewForClusterAnnotation:(id <MKAnnotation>)annotation {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:viewForClusterAnnotation:)]) {
-        return [_secondaryDelegate mapView:self viewForClusterAnnotation:annotation];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:viewForClusterAnnotation:)]) {
+        return [_clusterDelegate mapView:self viewForClusterAnnotation:annotation];
     }
     
     return nil;
 }
 
-- (void)mapView:(TSClusterMapView *)mapView willBeginBuildingClusterTreeForMapPoints:(NSSet *)annotations {
+- (void)mapView:(TSClusterMapView *)mapView willBeginBuildingClusterTreeForMapPoints:(NSSet <ADMapPointAnnotation *> *)annotations {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:willBeginBuildingClusterTreeForMapPoints:)]) {
-        [_secondaryDelegate mapView:mapView willBeginBuildingClusterTreeForMapPoints:annotations];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:willBeginBuildingClusterTreeForMapPoints:)]) {
+        [_clusterDelegate mapView:mapView willBeginBuildingClusterTreeForMapPoints:annotations];
     }
 }
 
-- (void)mapView:(TSClusterMapView *)mapView didFinishBuildingClusterTreeForMapPoints:(NSSet *)annotations {
+- (void)mapView:(TSClusterMapView *)mapView didFinishBuildingClusterTreeForMapPoints:(NSSet <ADMapPointAnnotation *> *)annotations {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapView:didFinishBuildingClusterTreeForMapPoints:)]) {
-        [_secondaryDelegate mapView:mapView didFinishBuildingClusterTreeForMapPoints:annotations];
+    if ([_clusterDelegate respondsToSelector:@selector(mapView:didFinishBuildingClusterTreeForMapPoints:)]) {
+        [_clusterDelegate mapView:mapView didFinishBuildingClusterTreeForMapPoints:annotations];
     }
 }
 
 - (void)mapViewWillBeginClusteringAnimation:(TSClusterMapView *)mapView{
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapViewWillBeginClusteringAnimation:)]) {
-        [_secondaryDelegate mapViewWillBeginClusteringAnimation:mapView];
+    if ([_clusterDelegate respondsToSelector:@selector(mapViewWillBeginClusteringAnimation:)]) {
+        [_clusterDelegate mapViewWillBeginClusteringAnimation:mapView];
     }
 }
 
 - (void)mapViewDidCancelClusteringAnimation:(TSClusterMapView *)mapView {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapViewDidCancelClusteringAnimation:)]) {
-        [_secondaryDelegate mapViewDidCancelClusteringAnimation:mapView];
+    if ([_clusterDelegate respondsToSelector:@selector(mapViewDidCancelClusteringAnimation:)]) {
+        [_clusterDelegate mapViewDidCancelClusteringAnimation:mapView];
     }
 }
 
 - (void)mapViewDidFinishClusteringAnimation:(TSClusterMapView *)mapView{
     
-    if ([_secondaryDelegate respondsToSelector:@selector(mapViewDidFinishClusteringAnimation:)]) {
-        [_secondaryDelegate mapViewDidFinishClusteringAnimation:mapView];
+    if ([_clusterDelegate respondsToSelector:@selector(mapViewDidFinishClusteringAnimation:)]) {
+        [_clusterDelegate mapViewDidFinishClusteringAnimation:mapView];
     }
 }
 
 - (void)userWillPanMapView:(TSClusterMapView *)mapView {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(userWillPanMapView:)]) {
-        [_secondaryDelegate userWillPanMapView:mapView];
+    if ([_clusterDelegate respondsToSelector:@selector(userWillPanMapView:)]) {
+        [_clusterDelegate userWillPanMapView:mapView];
     }
 }
 
 - (void)userDidPanMapView:(TSClusterMapView *)mapView {
     
-    if ([_secondaryDelegate respondsToSelector:@selector(userDidPanMapView:)]) {
-        [_secondaryDelegate userDidPanMapView:mapView];
+    if ([_clusterDelegate respondsToSelector:@selector(userDidPanMapView:)]) {
+        [_clusterDelegate userDidPanMapView:mapView];
     }
 }
 

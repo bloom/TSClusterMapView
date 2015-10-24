@@ -10,7 +10,7 @@
 
 @implementation NSDictionary (MKMapRect)
 
-+ (NSDictionary *)dictionaryFromMapRect:(MKMapRect)mapRect{
++ (NSDictionary <NSString *, NSNumber *>*)dictionaryFromMapRect:(MKMapRect)mapRect{
     NSMutableDictionary *d = [NSMutableDictionary dictionary];
     [d setObject:[NSNumber numberWithDouble:mapRect.origin.x] forKey:@"x"];
     [d setObject:[NSNumber numberWithDouble:mapRect.origin.y] forKey:@"y"];

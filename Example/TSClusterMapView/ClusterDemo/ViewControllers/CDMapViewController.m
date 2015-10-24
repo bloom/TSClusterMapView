@@ -93,7 +93,7 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
     return view;
 }
 
-- (void)mapView:(TSClusterMapView *)mapView willBeginBuildingClusterTreeForMapPoints:(NSSet *)annotations {
+- (void)mapView:(TSClusterMapView *)mapView willBeginBuildingClusterTreeForMapPoints:(NSSet<ADMapPointAnnotation *> *)annotations {
     NSLog(@"Kd-tree will begin mapping item count %lu", (unsigned long)annotations.count);
     
     _startTime = [NSDate date];
@@ -107,7 +107,7 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
     }];
 }
 
-- (void)mapView:(TSClusterMapView *)mapView didFinishBuildingClusterTreeForMapPoints:(NSSet *)annotations {
+- (void)mapView:(TSClusterMapView *)mapView didFinishBuildingClusterTreeForMapPoints:(NSSet<ADMapPointAnnotation *> *)annotations {
     NSLog(@"Kd-tree finished mapping item count %lu", (unsigned long)annotations.count);
     NSLog(@"Took %f seconds", -[_startTime timeIntervalSinceNow]);
     
@@ -142,7 +142,15 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
     NSLog(@"Map did pan from user interaction");
 }
 
+- (BOOL)mapView:(TSClusterMapView *)mapView shouldForceSplitClusterAnnotation:(ADClusterAnnotation *)clusterAnnotation {
+    
+    return YES;
+}
 
+- (BOOL)mapView:(TSClusterMapView *)mapView shouldRepositionAnnotations:(NSArray<ADClusterAnnotation *> *)annotations toAvoidClashAtCoordinate:(CLLocationCoordinate2D)coordinate {
+    
+    return YES;
+}
 
 #pragma mark - Tab Bar Delegate
 

@@ -32,13 +32,13 @@ extern NSString * const KDTreeClusteringProgress;
  * @discussion MapView will begin creating Kd-tree from new annotations. Use this delegate to alert the user of a refresh for large data sets with long build times.
  * @param mapView The map view that will begin clustering.
  */
-- (void)mapView:(TSClusterMapView *)mapView willBeginBuildingClusterTreeForMapPoints:(NSSet *)annotations;
+- (void)mapView:(TSClusterMapView *)mapView willBeginBuildingClusterTreeForMapPoints:(NSSet <ADMapPointAnnotation *> *)annotations;
 
 /*!
  * @discussion MapView did finish creating Kd-tree from new annotations. Remove any UI associated with loading annotations, cluster animation will begin.
  * @param mapView The map view that will begin clustering.
  */
-- (void)mapView:(TSClusterMapView *)mapView didFinishBuildingClusterTreeForMapPoints:(NSSet *)annotations;
+- (void)mapView:(TSClusterMapView *)mapView didFinishBuildingClusterTreeForMapPoints:(NSSet <ADMapPointAnnotation *> *)annotations;
 
 /*!
  * @discussion Animation operation will begin for mapView. Follows a mapView:regionDidChangeAnimated: or mapViewDidFinishBuildingClusterTree. Operation may cancel before finishing from new clustering parameters.
@@ -59,12 +59,30 @@ extern NSString * const KDTreeClusteringProgress;
 - (void)mapViewDidFinishClusteringAnimation:(TSClusterMapView *)mapView;
 
 /*!
- * @discussion Convenience delegate to determine if map will pan by user gesture
+ * @discussion Used to gain greater control of presenting information for clusters that contain annotations too close to split naturally when the map is at or near max camera zoom level. Only available when clusterZoomsOnTap = YES.
+ * @param mapView The map view that is asking to force split cluster.
+ * @param clusterAnnotation The cluster annotation containing the annotations to be split. Get clustered MKAnnotations in originalAnnotations.
+ * @return Return NO to keep cluster together. Return YES to continue to mapView:shouldRepositionAnnotations:toAvoidClashAtCoordinate:. Defaults to YES.
+ */
+- (BOOL)mapView:(TSClusterMapView *)mapView shouldForceSplitClusterAnnotation:(ADClusterAnnotation *)clusterAnnotation;
+
+
+/*!
+ * @discussion Used to gain greater control of the spread of clusters that share coordinates. To operate properly ensure setting only the coordinatePostAnimation property or you may experience undesired effects.
+ * @param mapView The map view that is asking to reposition the annotations.
+ * @param annotations The cluster annotations that need to be spread out on the map to become visible.
+ * @param coordinate The coordinate the annotations share.
+ * @return Return NO to manually set the coordinatePostAnimation for each annotation. Return YES to split cluster in a circle around shared coordinate. Defaults to YES.
+ */
+- (BOOL)mapView:(TSClusterMapView *)mapView shouldRepositionAnnotations:(NSArray <ADClusterAnnotation *>*)annotations toAvoidClashAtCoordinate:(CLLocationCoordinate2D)coordinate;
+
+/*!
+ * @discussion Convenience delegate to determine if map will pan by user gesture. Requires monitorMapPan = YES.
  * @param mapView The map view that will begin panning.
  */
 - (void)userWillPanMapView:(TSClusterMapView *)mapView;
 /*!
- * @discussion Convenience delegate to determine if map did pan by user gesture
+ * @discussion Convenience delegate to determine if map did pan by user gesture. Requires monitorMapPan = YES.
  * @param mapView The map view that did finish panning.
  */
 - (void)userDidPanMapView:(TSClusterMapView *)mapView;
@@ -94,7 +112,7 @@ typedef NS_ENUM(NSInteger, ADClusterBufferSize) {
  * @discussion Adds multiple annotations to the map and clusters if needed (threadsafe). Rebuilds entire cluster tree.
  * @param annotations The array of MKAnnotation objects to be added to map
  */
-- (void)addClusteredAnnotations:(NSArray *)annotations;
+- (void)addClusteredAnnotations:(NSArray <id<MKAnnotation>> *)annotations;
 
 /*!
  * @discussion Add annotation with option to force a full tree refresh (threadsafe).
@@ -126,7 +144,7 @@ typedef NS_ENUM(NSInteger, ADClusterBufferSize) {
 /*!
  * @discussion Visible cluster annotations. Will contain clusters just outside visible rect included in buffer zone.
  */
-@property (readonly) NSArray * visibleClusterAnnotations;
+@property (readonly) NSArray <ADClusterAnnotation *> * visibleClusterAnnotations;
 
 /*!
  * @discussion Suggested number of clusterable annotations visible at once. More may be visible if buffer size not set to none. Less will be visible if clusters overlap.  Default: 20
@@ -178,6 +196,33 @@ typedef NS_ENUM(NSInteger, ADClusterBufferSize) {
  Turn on delegate call userDidPanMapView:
  */
 @property (assign, nonatomic) BOOL monitorMapPan;
+
+
+/**
+ Setting mapView delegate will also set clusterDelegate
+ */
+@property (nonatomic, weak, readonly) id <TSClusterMapViewDelegate>  clusterDelegate;
+
+
+
+//Clustering
+@property (nonatomic, assign) MKMapRect previousVisibleMapRectClustered;
+@property (nonatomic, strong) ADMapCluster *rootMapCluster;
+
+@property (nonatomic, strong, readonly) NSMutableSet <id<MKAnnotation>> *clusterableAnnotationsAdded;
+
+@property (nonatomic, strong, readonly) NSOperationQueue *clusterOperationQueue;
+@property (nonatomic, strong, readonly) NSOperationQueue *preClusterOperationQueue;
+
+@property (nonatomic, strong, readonly) NSCache *annotationViewCache;
+
+@property (nonatomic, strong, readonly) NSOperationQueue *treeOperationQueue;
+
+@property (nonatomic, readonly) NSSet <ADClusterAnnotation *> *clusterAnnotations;
+
+@property (strong, nonatomic, readonly) NSMutableSet <ADClusterAnnotation *> *clusterAnnotationsPool;
+
+@property (strong, nonatomic, readonly) UIPanGestureRecognizer *panRecognizer;
 
 
 @end

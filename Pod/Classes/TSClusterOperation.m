@@ -588,24 +588,16 @@
     //
     //This helps distribute clusters more evenly by limiting clusters presented relative to viewable region.
     //Zooming all the way out will then be able to cluster down to one single annotation if all clusters are within one grid rect.
-    
-    NSDate *date = [NSDate date];
     NSUInteger numberOnScreen = _numberOfClusters;
     
     if (_mapView.camera.altitude > 1000) {
         
         //Number of map rects that contain at least one annotation
         NSSet *mapRects = [self mapRectsFromMaxNumberOfClusters:_numberOfClusters mapRect:clusteredMapRect];
-        
-        date = [NSDate date];
         numberOnScreen = [_rootMapCluster numberOfMapRectsContainingChildren:mapRects];
         if (numberOnScreen < 1) {
             numberOnScreen = 1;
         }
-    }
-    else {
-        //Show maximum number of clusters we're at the minimum level set
-        numberOnScreen = _numberOfClusters;
     }
     
     //Can never have more than the available annotations in the pool

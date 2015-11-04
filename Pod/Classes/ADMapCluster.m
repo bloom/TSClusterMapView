@@ -163,8 +163,8 @@
         aY = sumXsquared > sumYsquared ? 0.0 : 1.0;
     }
     
-    NSMutableSet * leftAnnotations = [[NSMutableSet alloc] init];
-    NSMutableSet * rightAnnotations = [[NSMutableSet alloc] init];
+    NSMutableSet * leftAnnotations;
+    NSMutableSet * rightAnnotations;
     
     if (fabs(sumXsquared)/annotations.count < ADMapClusterDiscriminationPrecision || fabs(sumYsquared)/annotations.count < ADMapClusterDiscriminationPrecision) { // all X and Y are the same => same coordinates
         // then every x equals XMean and we have to arbitrarily choose where to put the pivotIndex
@@ -486,10 +486,8 @@
     NSMutableSet * clusters = [[NSMutableSet alloc] initWithObjects:self, nil];
     NSMutableSet * annotations = [[NSMutableSet alloc] init];
     NSMutableSet * previousLevelClusters = nil;
-    NSMutableSet * previousLevelAnnotations = nil;
     BOOL clustersDidAddChild = YES; // prevents infinite loop at the bottom of the tree
     while (clusters.count + annotations.count < N && clusters.count > 0 && clustersDidAddChild) {
-        previousLevelAnnotations = [annotations mutableCopy];
         previousLevelClusters = [clusters mutableCopy];
         [clusters removeAllObjects];
         

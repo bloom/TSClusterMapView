@@ -311,6 +311,8 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 - (void)removeAllAnnotations {
     [super removeAnnotations:_clusterableAnnotationsAdded.allObjects];
     [_clusterableAnnotationsAdded removeAllObjects];
+    
+    [self needsRefresh];
 }
 
 #pragma mark - Annotations

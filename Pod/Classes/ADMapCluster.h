@@ -26,9 +26,9 @@ typedef void(^KdtreeCompletionBlock)(ADMapCluster *mapCluster);
 
 @property (nonatomic, readonly) NSInteger depth;
 
-@property (readonly) NSMutableArray *originalAnnotations;
+@property (readonly) NSMutableArray <id<MKAnnotation>> *originalAnnotations;
 
-@property (readonly) NSMutableArray *originalMapPointAnnotations;
+@property (readonly) NSMutableArray <ADMapPointAnnotation *> *originalMapPointAnnotations;
 
 @property (readonly) NSString *title;
 
@@ -36,15 +36,15 @@ typedef void(^KdtreeCompletionBlock)(ADMapCluster *mapCluster);
 
 @property (assign, nonatomic, readonly) NSInteger clusterCount;
 
-@property (readonly) NSArray *clusteredAnnotationTitles;
+@property (readonly) NSArray <NSString *> *clusteredAnnotationTitles;
 
-@property (readonly) NSArray *children;
+@property (readonly) NSArray <ADMapCluster *> *children;
 
-@property (readonly) NSMutableSet *allChildClusters;
+@property (readonly) NSMutableSet <ADMapCluster *> *allChildClusters;
 
 @property (weak, nonatomic) ADMapCluster *parentCluster;
 
-@property (readonly) NSSet *clustersWithAnnotations;
+@property (readonly) NSSet <ADMapCluster *> *clustersWithAnnotations;
 
 /*!
  * @discussion Creates a KD-tree of clusters http://en.wikipedia.org/wiki/K-d_tree
@@ -52,7 +52,7 @@ typedef void(^KdtreeCompletionBlock)(ADMapCluster *mapCluster);
  * @param mapView The ADClusterMapView that will send the delegate callback
  * @param completion A new ADMapCluster object.
  */
-+ (void)rootClusterForAnnotations:(NSSet *)annotations mapView:(TSClusterMapView *)mapView completion:(KdtreeCompletionBlock)completion ;
++ (void)rootClusterForAnnotations:(NSSet <ADMapPointAnnotation *> *)annotations mapView:(TSClusterMapView *)mapView completion:(KdtreeCompletionBlock)completion ;
 
 
 /*!
@@ -63,7 +63,7 @@ typedef void(^KdtreeCompletionBlock)(ADMapCluster *mapCluster);
  * @param showSubtitle A Boolean to show subtitle from titles of children
  * @param completion A new ADMapCluster object.
  */
-+ (void)rootClusterForAnnotations:(NSSet *)annotations centerWeight:(double)gamma title:(NSString *)clusterTitle showSubtitle:(BOOL)showSubtitle completion:(KdtreeCompletionBlock)completion ;
++ (void)rootClusterForAnnotations:(NSSet <ADMapPointAnnotation *> *)annotations centerWeight:(double)gamma title:(NSString *)clusterTitle showSubtitle:(BOOL)showSubtitle completion:(KdtreeCompletionBlock)completion ;
 
 /*!
  * @discussion Adds a single map point annotation to an existing KD-tree map cluster root
@@ -90,14 +90,14 @@ typedef void(^KdtreeCompletionBlock)(ADMapCluster *mapCluster);
  * @param overlap If YES annotation view size will not be accounted and clusters will overlap
  * @return A set containing children found in the rect. May return less than specified or none depending on results.
  */
-- (NSSet *)find:(NSInteger)number childrenInMapRect:(MKMapRect)mapRect annotationViewSize:(MKMapRect)annotationSizeRect allowOverlap:(BOOL)overlap;
+- (NSSet <ADMapCluster *> *)find:(NSInteger)N childrenInMapRect:(MKMapRect)mapRect annotationViewSize:(MKMapRect)annotationSizeRect allowOverlap:(BOOL)overlap;
 
 /*!
  * @discussion Checks the receiver to see how many of the given rects contain coordinates of children
  * @param mapRects An NSSet of NSDictionary objects containing MKMapRect structs (Use NSDictionary+MKMapRect method)
  * @return Number of map rects containing coordinates of children
  */
-- (NSUInteger)numberOfMapRectsContainingChildren:(NSSet *)mapRects;
+- (NSUInteger)numberOfMapRectsContainingChildren:(NSSet <NSDictionary <NSString *, NSNumber *>*> *)mapRects;
 
 /*!
  * @discussion Check the receiver to see if contains the given cluster within it's cluster children
@@ -126,7 +126,7 @@ typedef void(^KdtreeCompletionBlock)(ADMapCluster *mapCluster);
  * @param clusters The clusters that need to be sorted.
  * @return Set of clusters that are all children of the receiver.
  */
-- (NSMutableSet *)findChildrenForClusterInSet:(NSSet *)clusters;
+- (NSMutableSet <ADMapCluster *> *)findChildrenForClusterInSet:(NSSet <ADMapCluster *> *)clusters;
 
 
 /*!
@@ -134,6 +134,6 @@ typedef void(^KdtreeCompletionBlock)(ADMapCluster *mapCluster);
  * @param clusters The clusters to search.
  * @return The cluster that is an ancestor of the receiver or nil if there are none.
  */
-- (ADMapCluster *)findAncestorForClusterInSet:(NSSet *)clusters;
+- (ADMapCluster *)findAncestorForClusterInSet:(NSSet <ADMapCluster *> *)clusters;
 
 @end

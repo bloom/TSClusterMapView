@@ -11,7 +11,7 @@
 
 @interface NSDictionary (MKMapRect)
 
-+ (NSDictionary *)dictionaryFromMapRect:(MKMapRect)mapRect;
++ (NSDictionary <NSString *, NSNumber *>*)dictionaryFromMapRect:(MKMapRect)mapRect;
 
 - (MKMapRect)mapRectForDictionary;
 

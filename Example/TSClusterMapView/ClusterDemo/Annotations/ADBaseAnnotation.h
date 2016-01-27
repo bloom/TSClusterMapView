@@ -11,7 +11,7 @@
 
 @interface ADBaseAnnotation : NSObject <MKAnnotation>
 
-- (id)initWithDictionary:(NSDictionary *)dictionary;
+- (id)initWithDictionary:(NSDictionary <NSString *, id> *)dictionary;
 
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, copy) NSString *title;

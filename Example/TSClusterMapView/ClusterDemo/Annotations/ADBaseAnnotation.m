@@ -14,7 +14,7 @@
 
 @implementation ADBaseAnnotation
 
-- (id)initWithDictionary:(NSDictionary *)dictionary {
+- (id)initWithDictionary:(NSDictionary <NSString *, id> *)dictionary {
     
     NSDictionary * coordinateDictionary = [dictionary objectForKey:@"coordinates"];
     

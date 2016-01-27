@@ -16,8 +16,10 @@ typedef void(^ClusterOperationCompletionBlock)(MKMapRect clusteredRect, BOOL fin
 @property (nonatomic, copy) ClusterOperationCompletionBlock finishedBlock;
 
 
-+ (instancetype)mapView:(TSClusterMapView *)mapView rect:(MKMapRect)rect rootCluster:(ADMapCluster *)rootCluster showNumberOfClusters:(NSUInteger)numberOfClusters clusterAnnotations:(NSSet *)clusterAnnotations completion:(ClusterOperationCompletionBlock)completion;
++ (instancetype)mapView:(TSClusterMapView *)mapView rect:(MKMapRect)rect rootCluster:(ADMapCluster *)rootCluster showNumberOfClusters:(NSUInteger)numberOfClusters clusterAnnotations:(NSSet <ADClusterAnnotation *> *)clusterAnnotations completion:(ClusterOperationCompletionBlock)completion;
 
-+ (instancetype)mapView:(TSClusterMapView *)mapView splitCluster:(ADMapCluster *)splitCluster clusterAnnotationsPool:(NSSet *)clusterAnnotations;
++ (instancetype)mapView:(TSClusterMapView *)mapView splitCluster:(ADMapCluster *)splitCluster clusterAnnotationsPool:(NSSet <ADClusterAnnotation *> *)clusterAnnotations;
+
++ (NSDictionary <NSValue *, NSMutableArray <id<MKAnnotation>> *>*)groupAnnotationsByLocationValue:(NSSet <id<MKAnnotation>>*)annotations;
 
 @end

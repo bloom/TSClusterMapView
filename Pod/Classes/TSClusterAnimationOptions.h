@@ -7,7 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import "TSPlatformCompatibility.h"
+#if TS_TARGET_IOS
+  #import <UIKit/UIKit.h>
+#endif
 
  /**
  * Cluster animation options

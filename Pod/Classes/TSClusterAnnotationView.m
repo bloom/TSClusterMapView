@@ -10,6 +10,11 @@
 #import "ADClusterAnnotation.h"
 #import "TSRefreshedAnnotationView.h"
 
+#import <TargetConditionals.h>
+#if !TARGET_OS_IOS
+  #define UIView NSView // For our purposes, close enough
+#endif
+
 @interface TSClusterAnnotationView ()
 
 @property (strong, nonatomic) UIView *contentView;
@@ -95,5 +100,36 @@
     
     [self.addedView setHighlighted:highlighted];
 }
+
+
+
+#if TS_TARGET_MAC
+
+- (BOOL)wantsUpdateLayer {
+    return YES;
+}
+
+- (void)updateLayer {
+    // There's not much to do here.
+}
+
+
+- (void)setTransform:(CGAffineTransform)transform
+{
+    self.layer.transform = CATransform3DMakeAffineTransform(transform);
+}
+
+- (CGAffineTransform)transform
+{
+    return CATransform3DGetAffineTransform(self.layer.transform);
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow
+{
+    self.wantsLayer = YES;
+    [super viewWillMoveToWindow:newWindow];
+}
+
+#endif
 
 @end

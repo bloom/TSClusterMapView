@@ -12,6 +12,7 @@
 #import "ADClusterAnnotation.h"
 #import "TSClusterAnnotationView.h"
 #import "TSClusterAnimationOptions.h"
+#import "TSPlatformCompatibility.h"
 
 // Progress of cluster tree notification
 extern NSString * const KDTreeClusteringProgress;

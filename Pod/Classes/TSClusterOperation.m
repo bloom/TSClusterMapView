@@ -17,6 +17,7 @@
 #import "CLLocation+Utilities.h"
 #import "TSClusterMapView.h"
 #import "TSRefreshedAnnotationView.h"
+#import "TSPlatformCompatibility.h"
 
 @interface TSClusterOperation ()
 
@@ -403,7 +404,7 @@
         }
         
         TSClusterAnimationOptions *options = _mapView.clusterAnimationOptions;
-        [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions animations:^{
+        [self doAnimationsWithOptions:options animations:^{
             for (ADClusterAnnotation * annotation in _annotationPool) {
                 if (annotation.cluster) {
                     annotation.coordinate = annotation.coordinatePostAnimation;
@@ -435,6 +436,24 @@
         }];
     }];
 }
+
+#if TS_TARGET_IOS
+- (void)doAnimationsWithOptions:(TSClusterAnimationOptions *)options animations:(void(^)(void))animations completion:(void(^)(BOOL))completion
+{
+    [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions animations:animations completion:completion];
+}
+#elif TS_TARGET_MAC
+- (void)doAnimationsWithOptions:(TSClusterAnimationOptions *)options animations:(void(^)(void))animations completion:(void(^)(BOOL))completion
+{
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
+        context.allowsImplicitAnimation = YES;
+        context.duration = options.duration;
+        animations();
+    } completionHandler:^{
+        completion(YES);
+    }];
+}
+#endif
 
 - (void)resetAll {
     
@@ -508,8 +527,7 @@
         }
         
         TSClusterAnimationOptions *options = _mapView.clusterAnimationOptions;
-        
-        [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions  animations:^{
+        [self doAnimationsWithOptions:options animations:^{
             for (ADClusterAnnotation * annotation in matchedAnnotations) {
                 annotation.coordinate = annotation.coordinatePostAnimation;
                 [annotation.annotationView animateView];

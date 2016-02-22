@@ -13,6 +13,7 @@
 #import "NSDictionary+MKMapRect.h"
 #import "CLLocation+Utilities.h"
 #import "TSClusterOperation.h"
+#import "TSPlatformCompatibility.h"
 
 #define DATA_REFRESH_MAX 1000
 
@@ -85,10 +86,20 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }
 }
 
+#if TS_TARGET_IOS
 - (void)didMoveToSuperview {
-    
     [super didMoveToSuperview];
+    [self cancelOperationsIfOutOfView];
+}
+#else
+- (void)viewDidMoveToSuperview {
+    [super viewDidMoveToSuperview];
+    [self cancelOperationsIfOutOfView];
+}
+#endif
     
+- (void)cancelOperationsIfOutOfView
+{
     //No longer relevant to display stop operations
     if (!self.superview) {
         [_clusterOperationQueue cancelAllOperations];
@@ -443,12 +454,12 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return respondsToSelector;
 }
 
-- (void)forwardInvocation:(NSInvocation *)anInvocation {
-    if ([_clusterDelegate respondsToSelector:[anInvocation selector]]) {
-        [anInvocation invokeWithTarget:_clusterDelegate];
-    } else {
-        [super forwardInvocation:anInvocation];
+- (id)forwardingTargetForSelector:(SEL)aSelector
+{
+    if ([_clusterDelegate respondsToSelector:aSelector]) {
+        return _clusterDelegate;
     }
+    return [super forwardingTargetForSelector:aSelector];
 }
 
 
@@ -699,12 +710,14 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }
 }
 
+#if TS_TARGET_IOS
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
     
     if ([_clusterDelegate respondsToSelector:@selector(mapView:annotationView:calloutAccessoryControlTapped:)]) {
         [_clusterDelegate mapView:mapView annotationView:[self filterInternalView:view] calloutAccessoryControlTapped:control];
     }
 }
+#endif
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
     
@@ -791,6 +804,8 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return delegateAnnotationView;
 }
 
+
+#if TS_TARGET_IOS
 #pragma mark - Touch Event
 
 //Annotation selection is a touch down event. This will simulate a touch up inside selection of annotation for zoomOnTap
@@ -847,6 +862,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         }
     }
 }
+#endif
 
 - (TSClusterAnnotationView *)clusterAnnotationForSubview:(UIView *)view {
     

@@ -22,7 +22,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 @interface TSClusterMapView ()
 
-
+@property (nonatomic) MKCoordinateRegion lastKnownRegion;
 
 @end
 
@@ -670,14 +670,16 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
-    
     if ([_clusterDelegate respondsToSelector:@selector(mapView:regionWillChangeAnimated:)]) {
         [_clusterDelegate mapView:self regionWillChangeAnimated:animated];
     }
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    
+    if (MKCoordinateRegionIsEqual(mapView.region, self.lastKnownRegion)) {
+        return;
+    }
+    self.lastKnownRegion = mapView.region;
     [self clusterVisibleMapRectForceRefresh:NO];
     
     if ([_clusterDelegate respondsToSelector:@selector(mapView:regionDidChangeAnimated:)]) {

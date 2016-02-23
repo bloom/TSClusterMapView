@@ -23,4 +23,6 @@ BOOL MKMapRectApproxEqual(MKMapRect rect1, MKMapRect rect2);
 
 BOOL MKMapRectSizeIsGreaterThanOrEqual(MKMapRect rect1, MKMapRect rect2);
 
+BOOL MKCoordinateRegionIsEqual(MKCoordinateRegion region1, MKCoordinateRegion region2);
+
 @end

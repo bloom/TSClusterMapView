@@ -374,11 +374,13 @@
         }
         
         //Set pre animation position
-        for (ADClusterAnnotation *annotation in _annotationPool) {
-            if (CLLocationCoordinate2DIsValid(annotation.coordinatePreAnimation)) {
-                annotation.coordinate = annotation.coordinatePreAnimation;
+        [self doWithoutAnimation:^{
+            for (ADClusterAnnotation *annotation in _annotationPool) {
+                if (CLLocationCoordinate2DIsValid(annotation.coordinatePreAnimation)) {
+                    annotation.coordinate = annotation.coordinatePreAnimation;
+                }
             }
-        }
+        }];
         
         
         for (ADClusterAnnotation * annotation in _annotationPool) {
@@ -442,16 +444,28 @@
 {
     [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions animations:animations completion:completion];
 }
+
+- (void)doWithoutAnimation:(void(^)(void))updates {
+    [UIView performWithoutAnimation:updates];
+}
+
 #elif TS_TARGET_MAC
 - (void)doAnimationsWithOptions:(TSClusterAnimationOptions *)options animations:(void(^)(void))animations completion:(void(^)(BOOL))completion
 {
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         context.allowsImplicitAnimation = YES;
         context.duration = options.duration;
         animations();
     } completionHandler:^{
         completion(YES);
     }];
+}
+
+- (void)doWithoutAnimation:(void(^)(void))updates {
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
+        context.duration = 0;
+        updates();
+    } completionHandler:nil];
 }
 #endif
 

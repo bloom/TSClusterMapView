@@ -83,8 +83,7 @@
 }
 
 - (NSArray <id<MKAnnotation>> *)originalAnnotations {
-    NSAssert(self.cluster != nil, @"This annotation should have a cluster assigned!");
-    return self.cluster.originalAnnotations;
+    return self.cluster.originalAnnotations ?: @[];
 }
 
 - (NSUInteger)clusterCount {

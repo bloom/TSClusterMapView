@@ -23,6 +23,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 @interface TSClusterMapView ()
 
 @property (nonatomic) MKCoordinateRegion lastKnownRegion;
+@property (atomic) NSOperation *refreshOperation;
 
 @end
 
@@ -155,9 +156,18 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return _clusterPreferredVisibleCount;
 }
 
-- (void)needsRefresh {
-    
-    [self createKDTreeAndCluster:_clusterableAnnotationsAdded];
+- (void)setNeedsRefresh {
+    if (self.refreshOperation == nil) {
+        __weak typeof(self) weakSelf = self;
+        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+            typeof(self) strongSelf = weakSelf;
+            if (strongSelf) {
+                [strongSelf createKDTreeAndCluster:strongSelf->_clusterableAnnotationsAdded];
+            }
+        }];
+        self.refreshOperation = operation;
+        [[NSOperationQueue mainQueue] addOperation:operation];
+    }
 }
 
 #pragma mark - Add/Remove Annotations
@@ -204,7 +214,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }
     
     if (refresh || _treeOperationQueue.operationCount > 10) {
-        [self needsRefresh];
+        [self setNeedsRefresh];
         return;
     }
     
@@ -220,7 +230,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
                 [strongSelf clusterVisibleMapRectForceRefresh:YES];
             }
             else {
-                [strongSelf needsRefresh];
+                [strongSelf setNeedsRefresh];
             }
         }];
     }];
@@ -242,7 +252,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }
     
     if (count != _clusterableAnnotationsAdded.count) {
-        [self needsRefresh];
+        [self setNeedsRefresh];
     }
 }
 
@@ -257,7 +267,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         
         //Small data set just rebuild
         if (_clusterableAnnotationsAdded.count < DATA_REFRESH_MAX || _treeOperationQueue.operationCount > 10) {
-            [self needsRefresh];
+            [self setNeedsRefresh];
         }
         else {
             
@@ -272,7 +282,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
                         [strongSelf clusterVisibleMapRectForceRefresh:YES];
                     }
                     else {
-                        [strongSelf needsRefresh];
+                        [strongSelf setNeedsRefresh];
                     }
                 }];
             }];
@@ -293,7 +303,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     [_clusterableAnnotationsAdded minusSet:set];
     
     if (_clusterableAnnotationsAdded.count != previousCount) {
-        [self needsRefresh];
+        [self setNeedsRefresh];
     }
     
     [super removeAnnotations:annotations];
@@ -303,7 +313,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     [super removeAnnotations:_clusterableAnnotationsAdded.allObjects];
     [_clusterableAnnotationsAdded removeAllObjects];
     
-    [self needsRefresh];
+    [self setNeedsRefresh];
 }
 
 #pragma mark - Annotations

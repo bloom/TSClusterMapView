@@ -156,13 +156,14 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     return _clusterPreferredVisibleCount;
 }
 
-- (void)setNeedsRefresh {
+- (void)needsRefresh {
     if (self.refreshOperation == nil) {
         __weak typeof(self) weakSelf = self;
         NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
             typeof(self) strongSelf = weakSelf;
             if (strongSelf) {
                 [strongSelf createKDTreeAndCluster:strongSelf->_clusterableAnnotationsAdded];
+                strongSelf.refreshOperation = nil;
             }
         }];
         self.refreshOperation = operation;
@@ -214,7 +215,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }
     
     if (refresh || _treeOperationQueue.operationCount > 10) {
-        [self setNeedsRefresh];
+        [self needsRefresh];
         return;
     }
     
@@ -230,7 +231,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
                 [strongSelf clusterVisibleMapRectForceRefresh:YES];
             }
             else {
-                [strongSelf setNeedsRefresh];
+                [strongSelf needsRefresh];
             }
         }];
     }];
@@ -252,7 +253,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     }
     
     if (count != _clusterableAnnotationsAdded.count) {
-        [self setNeedsRefresh];
+        [self needsRefresh];
     }
 }
 
@@ -267,7 +268,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         
         //Small data set just rebuild
         if (_clusterableAnnotationsAdded.count < DATA_REFRESH_MAX || _treeOperationQueue.operationCount > 10) {
-            [self setNeedsRefresh];
+            [self needsRefresh];
         }
         else {
             
@@ -282,7 +283,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
                         [strongSelf clusterVisibleMapRectForceRefresh:YES];
                     }
                     else {
-                        [strongSelf setNeedsRefresh];
+                        [strongSelf needsRefresh];
                     }
                 }];
             }];
@@ -303,7 +304,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     [_clusterableAnnotationsAdded minusSet:set];
     
     if (_clusterableAnnotationsAdded.count != previousCount) {
-        [self setNeedsRefresh];
+        [self needsRefresh];
     }
     
     [super removeAnnotations:annotations];
@@ -313,7 +314,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     [super removeAnnotations:_clusterableAnnotationsAdded.allObjects];
     [_clusterableAnnotationsAdded removeAllObjects];
     
-    [self setNeedsRefresh];
+    [self needsRefresh];
 }
 
 #pragma mark - Annotations

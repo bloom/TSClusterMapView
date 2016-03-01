@@ -13,7 +13,7 @@
 #if TS_TARGET_IOS
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:(v) options:NSNumericSearch] != NSOrderedAscending)
 #else
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) (YES)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) YES
 #endif
 
 @implementation ADClusterAnnotation

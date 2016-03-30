@@ -13,6 +13,9 @@
 		C5F910B91CAC3DD4007DB2AE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910B81CAC3DD4007DB2AE /* ViewController.m */; };
 		C5F910BB1CAC3DD4007DB2AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5F910BA1CAC3DD4007DB2AE /* Assets.xcassets */; };
 		C5F910BE1CAC3DD4007DB2AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5F910BC1CAC3DD4007DB2AE /* Main.storyboard */; };
+		C5F910C91CAC4518007DB2AE /* CDStreetlights.json in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C61CAC4518007DB2AE /* CDStreetlights.json */; };
+		C5F910CA1CAC4518007DB2AE /* CDToilets.json in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C71CAC4518007DB2AE /* CDToilets.json */; };
+		C5F910CB1CAC4518007DB2AE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C81CAC4518007DB2AE /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +31,9 @@
 		C5F910BA1CAC3DD4007DB2AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5F910BD1CAC3DD4007DB2AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C5F910BF1CAC3DD4007DB2AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C5F910C61CAC4518007DB2AE /* CDStreetlights.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CDStreetlights.json; sourceTree = "<group>"; };
+		C5F910C71CAC4518007DB2AE /* CDToilets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CDToilets.json; sourceTree = "<group>"; };
+		C5F910C81CAC4518007DB2AE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +78,7 @@
 		C5F910B01CAC3DD4007DB2AE /* TSClusterMapView-MacExample */ = {
 			isa = PBXGroup;
 			children = (
+				C5F910C51CAC4518007DB2AE /* Resources */,
 				C5F910B11CAC3DD4007DB2AE /* AppDelegate.h */,
 				C5F910B21CAC3DD4007DB2AE /* AppDelegate.m */,
 				C5F910B71CAC3DD4007DB2AE /* ViewController.h */,
@@ -90,6 +97,17 @@
 				C5F910B51CAC3DD4007DB2AE /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C5F910C51CAC4518007DB2AE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C5F910C61CAC4518007DB2AE /* CDStreetlights.json */,
+				C5F910C71CAC4518007DB2AE /* CDToilets.json */,
+				C5F910C81CAC4518007DB2AE /* Images.xcassets */,
+			);
+			name = Resources;
+			path = ../../TSClusterMapView/ClusterDemo/Resources;
 			sourceTree = "<group>";
 		};
 		CFEB0C25E562A477C40A413E /* Frameworks */ = {
@@ -161,7 +179,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5F910BB1CAC3DD4007DB2AE /* Assets.xcassets in Resources */,
+				C5F910CB1CAC4518007DB2AE /* Images.xcassets in Resources */,
+				C5F910CA1CAC4518007DB2AE /* CDToilets.json in Resources */,
 				C5F910BE1CAC3DD4007DB2AE /* Main.storyboard in Resources */,
+				C5F910C91CAC4518007DB2AE /* CDStreetlights.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

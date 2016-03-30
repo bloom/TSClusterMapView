@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.MapKitIBPlugin" version="10116"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -670,8 +671,35 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <mapView mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="mf3-fI-mu7" customClass="TSClusterMapView">
+                                <rect key="frame" x="120" y="0.0" width="360" height="300"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="300" id="4MA-VO-0GW"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="300" id="Qze-3M-a3F"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="bmZ-aX-CQ4"/>
+                                </connections>
+                            </mapView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="F24-Jc-PkX">
+                                <rect key="frame" x="0.0" y="0.0" width="120" height="300"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="QOE-Nu-aoY"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="F24-Jc-PkX" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="1np-TW-Yh8"/>
+                            <constraint firstItem="mf3-fI-mu7" firstAttribute="leading" secondItem="F24-Jc-PkX" secondAttribute="trailing" id="91L-M6-iqM"/>
+                            <constraint firstItem="mf3-fI-mu7" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="B2W-Nb-Paf"/>
+                            <constraint firstItem="F24-Jc-PkX" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="MJx-kM-fXL"/>
+                            <constraint firstAttribute="trailing" secondItem="mf3-fI-mu7" secondAttribute="trailing" id="SB4-ba-FdK"/>
+                            <constraint firstAttribute="bottom" secondItem="mf3-fI-mu7" secondAttribute="bottom" id="tmm-Rm-gLD"/>
+                            <constraint firstAttribute="bottom" secondItem="F24-Jc-PkX" secondAttribute="bottom" id="wYh-wD-ApH"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

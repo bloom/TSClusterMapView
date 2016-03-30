@@ -45,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		0D4C79A4D57366F525E2C008 /* TSClusterMapView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = TSClusterMapView.podspec; path = ../TSClusterMapView.podspec; sourceTree = "<group>"; };
+		137438EEE80438D2EFE9C7B4 /* Pods-MacExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MacExample/Pods-MacExample.debug.xcconfig"; sourceTree = "<group>"; };
 		23542B5B253AD7326DE38DA8 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		4169561A64CA46E7E036AA19 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		50F977F14BE62F4AF366F475 /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -65,6 +66,7 @@
 		846DAC3D387043C1ABF65244 /* libPods-TSClusterMapView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TSClusterMapView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		927261BC2927A1FFA1C7D9A0 /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0EDD22A5932C514E96FE695 /* Pods-TSClusterMapView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSClusterMapView.release.xcconfig"; path = "Pods/Target Support Files/Pods-TSClusterMapView/Pods-TSClusterMapView.release.xcconfig"; sourceTree = "<group>"; };
+		B95B8DAC55F44DB361B79AAF /* Pods-MacExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-MacExample/Pods-MacExample.release.xcconfig"; sourceTree = "<group>"; };
 		C56C08BA1A6F936F00FEDD45 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		C56C08BC1A6F936F00FEDD45 /* ADBaseAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADBaseAnnotation.h; sourceTree = "<group>"; };
 		C56C08BD1A6F936F00FEDD45 /* ADBaseAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADBaseAnnotation.m; sourceTree = "<group>"; };
@@ -203,6 +205,8 @@
 				B0EDD22A5932C514E96FE695 /* Pods-TSClusterMapView.release.xcconfig */,
 				D59CF490796882FA716034C7 /* Pods-Tests.debug.xcconfig */,
 				50F977F14BE62F4AF366F475 /* Pods-Tests.release.xcconfig */,
+				137438EEE80438D2EFE9C7B4 /* Pods-MacExample.debug.xcconfig */,
+				B95B8DAC55F44DB361B79AAF /* Pods-MacExample.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";

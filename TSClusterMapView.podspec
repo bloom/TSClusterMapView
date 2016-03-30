@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "TSClusterMapView"
-  s.version          = "2.1.0"
+  s.version          = "2.2.0"
   s.summary          = "Animated annotation clustering MKMapView subclass"
   s.description      = <<-DESC
                        This animated annotation clustering MKMapView subclass is based off of ADClusterMapView.
@@ -24,7 +24,8 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/ashare80/TSClusterMapView.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.platform     = :ios, '7.0'
+  s.ios.deployment_target = '7.0'
+  s.osx.deployment_target = '10.9'
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes'

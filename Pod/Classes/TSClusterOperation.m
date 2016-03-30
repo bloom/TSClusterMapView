@@ -17,6 +17,7 @@
 #import "CLLocation+Utilities.h"
 #import "TSClusterMapView.h"
 #import "TSRefreshedAnnotationView.h"
+#import "TSPlatformCompatibility.h"
 
 @interface TSClusterOperation ()
 
@@ -99,6 +100,7 @@
     
     if (!_rootMapCluster.clusterCount) {
         [self resetAll];
+        self.finishedBlock(MKMapRectMake(0, 0, 0, 0), false, nil);
         return;
     }
     
@@ -372,11 +374,13 @@
         }
         
         //Set pre animation position
-        for (ADClusterAnnotation *annotation in _annotationPool) {
-            if (CLLocationCoordinate2DIsValid(annotation.coordinatePreAnimation)) {
-                annotation.coordinate = annotation.coordinatePreAnimation;
+        [self doWithoutAnimation:^{
+            for (ADClusterAnnotation *annotation in _annotationPool) {
+                if (CLLocationCoordinate2DIsValid(annotation.coordinatePreAnimation)) {
+                    annotation.coordinate = annotation.coordinatePreAnimation;
+                }
             }
-        }
+        }];
         
         
         for (ADClusterAnnotation * annotation in _annotationPool) {
@@ -402,7 +406,7 @@
         }
         
         TSClusterAnimationOptions *options = _mapView.clusterAnimationOptions;
-        [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions animations:^{
+        [self doAnimationsWithOptions:options animations:^{
             for (ADClusterAnnotation * annotation in _annotationPool) {
                 if (annotation.cluster) {
                     annotation.coordinate = annotation.coordinatePostAnimation;
@@ -434,6 +438,36 @@
         }];
     }];
 }
+
+#if TS_TARGET_IOS
+- (void)doAnimationsWithOptions:(TSClusterAnimationOptions *)options animations:(void(^)(void))animations completion:(void(^)(BOOL))completion
+{
+    [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions animations:animations completion:completion];
+}
+
+- (void)doWithoutAnimation:(void(^)(void))updates {
+    [UIView performWithoutAnimation:updates];
+}
+
+#elif TS_TARGET_MAC
+- (void)doAnimationsWithOptions:(TSClusterAnimationOptions *)options animations:(void(^)(void))animations completion:(void(^)(BOOL))completion
+{
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+        context.allowsImplicitAnimation = YES;
+        context.duration = options.duration;
+        animations();
+    } completionHandler:^{
+        completion(YES);
+    }];
+}
+
+- (void)doWithoutAnimation:(void(^)(void))updates {
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
+        context.duration = 0;
+        updates();
+    } completionHandler:nil];
+}
+#endif
 
 - (void)resetAll {
     
@@ -507,8 +541,7 @@
         }
         
         TSClusterAnimationOptions *options = _mapView.clusterAnimationOptions;
-        
-        [UIView animateWithDuration:options.duration delay:0.0 usingSpringWithDamping:options.springDamping initialSpringVelocity:options.springVelocity options:options.viewAnimationOptions  animations:^{
+        [self doAnimationsWithOptions:options animations:^{
             for (ADClusterAnnotation * annotation in matchedAnnotations) {
                 annotation.coordinate = annotation.coordinatePostAnimation;
                 [annotation.annotationView animateView];
@@ -601,24 +634,16 @@
     //
     //This helps distribute clusters more evenly by limiting clusters presented relative to viewable region.
     //Zooming all the way out will then be able to cluster down to one single annotation if all clusters are within one grid rect.
-    
-    NSDate *date = [NSDate date];
     NSUInteger numberOnScreen = _numberOfClusters;
     
     if (_mapView.camera.altitude > 1000) {
         
         //Number of map rects that contain at least one annotation
         NSSet *mapRects = [self mapRectsFromMaxNumberOfClusters:_numberOfClusters mapRect:clusteredMapRect];
-        
-        date = [NSDate date];
         numberOnScreen = [_rootMapCluster numberOfMapRectsContainingChildren:mapRects];
         if (numberOnScreen < 1) {
             numberOnScreen = 1;
         }
-    }
-    else {
-        //Show maximum number of clusters we're at the minimum level set
-        numberOnScreen = _numberOfClusters;
     }
     
     //Can never have more than the available annotations in the pool

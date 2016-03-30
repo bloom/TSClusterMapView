@@ -12,6 +12,7 @@
 #import "ADClusterAnnotation.h"
 #import "TSClusterAnnotationView.h"
 #import "TSClusterAnimationOptions.h"
+#import "TSPlatformCompatibility.h"
 
 // Progress of cluster tree notification
 extern NSString * const KDTreeClusteringProgress;
@@ -120,6 +121,11 @@ typedef NS_ENUM(NSInteger, ADClusterBufferSize) {
  * @param refresh A Boolean that specifies whether the cluster tree should rebuild or quickly insert into existing tree. Cluster tree refresh can cause a delay with large data sets but provides more accurate clustering.
  */
 - (void)addClusteredAnnotation:(id<MKAnnotation>)annotation clusterTreeRefresh:(BOOL)refresh;
+
+/*!
+ * @discussion Remove all annotations from the map view.  No refresh is performed because all annotations are removed.
+ */
+- (void)removeAllAnnotations;
 
 /*!
  * @discussion Force a refresh of clustering tree.

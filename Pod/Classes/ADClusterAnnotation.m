@@ -8,8 +8,13 @@
 
 #import "ADClusterAnnotation.h"
 #import "TSRefreshedAnnotationView.h"
+#import "TSPlatformCompatibility.h"
 
+#if TS_TARGET_IOS
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:(v) options:NSNumericSearch] != NSOrderedAscending)
+#else
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) YES
+#endif
 
 @implementation ADClusterAnnotation
 
@@ -78,8 +83,7 @@
 }
 
 - (NSArray <id<MKAnnotation>> *)originalAnnotations {
-    NSAssert(self.cluster != nil, @"This annotation should have a cluster assigned!");
-    return self.cluster.originalAnnotations;
+    return self.cluster.originalAnnotations ?: @[];
 }
 
 - (NSUInteger)clusterCount {

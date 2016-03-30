@@ -53,4 +53,16 @@ BOOL MKMapRectSizeIsGreaterThanOrEqual(MKMapRect rect1, MKMapRect rect2) {
 }
 
 
+BOOL MKCoordinateRegionIsEqual(MKCoordinateRegion region1, MKCoordinateRegion region2) {
+    
+    BOOL result = (CLLocationCoordinate2DIsApproxEqual(region1.center, region2.center, 0.00001)
+                   && MKCoordinateSpanIsEqual(region1.span, region2.span));
+    return result;
+}
+
+BOOL MKCoordinateSpanIsEqual(MKCoordinateSpan span1, MKCoordinateSpan span2) {
+    return span1.latitudeDelta == span2.latitudeDelta && span1.longitudeDelta == span2.longitudeDelta;
+}
+
+
 @end

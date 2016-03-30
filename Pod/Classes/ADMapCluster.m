@@ -163,8 +163,8 @@
         aY = sumXsquared > sumYsquared ? 0.0 : 1.0;
     }
     
-    NSMutableSet <ADMapPointAnnotation *> *leftAnnotations = [[NSMutableSet alloc] init];
-    NSMutableSet <ADMapPointAnnotation *> *rightAnnotations = [[NSMutableSet alloc] init];
+    NSMutableSet <ADMapPointAnnotation *> *leftAnnotations;
+    NSMutableSet <ADMapPointAnnotation *> *rightAnnotations;
     
     if (fabs(sumXsquared)/annotations.count < ADMapClusterDiscriminationPrecision || fabs(sumYsquared)/annotations.count < ADMapClusterDiscriminationPrecision) { // all X and Y are the same => same coordinates
         // then every x equals XMean and we have to arbitrarily choose where to put the pivotIndex

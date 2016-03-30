@@ -16,6 +16,10 @@
 		C5F910C91CAC4518007DB2AE /* CDStreetlights.json in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C61CAC4518007DB2AE /* CDStreetlights.json */; };
 		C5F910CA1CAC4518007DB2AE /* CDToilets.json in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C71CAC4518007DB2AE /* CDToilets.json */; };
 		C5F910CB1CAC4518007DB2AE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C81CAC4518007DB2AE /* Images.xcassets */; };
+		C5F910E41CAC46D9007DB2AE /* ADBaseAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910DC1CAC46D9007DB2AE /* ADBaseAnnotation.m */; };
+		C5F910E51CAC46D9007DB2AE /* TSBathroomAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910DE1CAC46D9007DB2AE /* TSBathroomAnnotation.m */; };
+		C5F910E61CAC46D9007DB2AE /* TSStreetLightAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910E01CAC46D9007DB2AE /* TSStreetLightAnnotation.m */; };
+		C5F910E71CAC46D9007DB2AE /* TSDemoClusteredAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910E31CAC46D9007DB2AE /* TSDemoClusteredAnnotationView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +38,14 @@
 		C5F910C61CAC4518007DB2AE /* CDStreetlights.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CDStreetlights.json; sourceTree = "<group>"; };
 		C5F910C71CAC4518007DB2AE /* CDToilets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CDToilets.json; sourceTree = "<group>"; };
 		C5F910C81CAC4518007DB2AE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C5F910DB1CAC46D9007DB2AE /* ADBaseAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADBaseAnnotation.h; sourceTree = "<group>"; };
+		C5F910DC1CAC46D9007DB2AE /* ADBaseAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADBaseAnnotation.m; sourceTree = "<group>"; };
+		C5F910DD1CAC46D9007DB2AE /* TSBathroomAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSBathroomAnnotation.h; sourceTree = "<group>"; };
+		C5F910DE1CAC46D9007DB2AE /* TSBathroomAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSBathroomAnnotation.m; sourceTree = "<group>"; };
+		C5F910DF1CAC46D9007DB2AE /* TSStreetLightAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSStreetLightAnnotation.h; sourceTree = "<group>"; };
+		C5F910E01CAC46D9007DB2AE /* TSStreetLightAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSStreetLightAnnotation.m; sourceTree = "<group>"; };
+		C5F910E21CAC46D9007DB2AE /* TSDemoClusteredAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSDemoClusteredAnnotationView.h; sourceTree = "<group>"; };
+		C5F910E31CAC46D9007DB2AE /* TSDemoClusteredAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSDemoClusteredAnnotationView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +90,8 @@
 		C5F910B01CAC3DD4007DB2AE /* TSClusterMapView-MacExample */ = {
 			isa = PBXGroup;
 			children = (
+				C5F910DA1CAC46D9007DB2AE /* Annotations */,
+				C5F910E11CAC46D9007DB2AE /* AnnotationViews */,
 				C5F910C51CAC4518007DB2AE /* Resources */,
 				C5F910B11CAC3DD4007DB2AE /* AppDelegate.h */,
 				C5F910B21CAC3DD4007DB2AE /* AppDelegate.m */,
@@ -108,6 +122,28 @@
 			);
 			name = Resources;
 			path = ../../TSClusterMapView/ClusterDemo/Resources;
+			sourceTree = "<group>";
+		};
+		C5F910DA1CAC46D9007DB2AE /* Annotations */ = {
+			isa = PBXGroup;
+			children = (
+				C5F910DB1CAC46D9007DB2AE /* ADBaseAnnotation.h */,
+				C5F910DC1CAC46D9007DB2AE /* ADBaseAnnotation.m */,
+				C5F910DD1CAC46D9007DB2AE /* TSBathroomAnnotation.h */,
+				C5F910DE1CAC46D9007DB2AE /* TSBathroomAnnotation.m */,
+				C5F910DF1CAC46D9007DB2AE /* TSStreetLightAnnotation.h */,
+				C5F910E01CAC46D9007DB2AE /* TSStreetLightAnnotation.m */,
+			);
+			path = Annotations;
+			sourceTree = "<group>";
+		};
+		C5F910E11CAC46D9007DB2AE /* AnnotationViews */ = {
+			isa = PBXGroup;
+			children = (
+				C5F910E21CAC46D9007DB2AE /* TSDemoClusteredAnnotationView.h */,
+				C5F910E31CAC46D9007DB2AE /* TSDemoClusteredAnnotationView.m */,
+			);
+			path = AnnotationViews;
 			sourceTree = "<group>";
 		};
 		CFEB0C25E562A477C40A413E /* Frameworks */ = {
@@ -241,9 +277,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5F910E51CAC46D9007DB2AE /* TSBathroomAnnotation.m in Sources */,
+				C5F910E41CAC46D9007DB2AE /* ADBaseAnnotation.m in Sources */,
 				C5F910B91CAC3DD4007DB2AE /* ViewController.m in Sources */,
 				C5F910B61CAC3DD4007DB2AE /* main.m in Sources */,
 				C5F910B31CAC3DD4007DB2AE /* AppDelegate.m in Sources */,
+				C5F910E71CAC46D9007DB2AE /* TSDemoClusteredAnnotationView.m in Sources */,
+				C5F910E61CAC46D9007DB2AE /* TSStreetLightAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

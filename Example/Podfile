@@ -2,10 +2,6 @@ workspace 'TSClusterMapView.xcworkspace'
 source 'https://github.com/CocoaPods/Specs.git'
 
 
-#xcodeproj 'TSClusterMapView.xcodeproj'
-#link_with 'TSClusterMapView'
-#xcodeproj 'TSClusterMapView-MacExample/TSClusterMapView-MacExample.xcodeproj'
-
 target 'TSClusterMapView', :exclusive => true do
   platform :ios, '7.0'
   xcodeproj 'TSClusterMapView.xcodeproj'
@@ -18,6 +14,7 @@ target 'TSClusterMapView-MacExample', :exclusive => true do
   xcodeproj 'TSClusterMapView-MacExample/TSClusterMapView-MacExample.xcodeproj'
   pod "TSClusterMapView", :path => "../"
 end
+
 
 target 'Tests', :exclusive => true do
   platform :ios, '7.0'

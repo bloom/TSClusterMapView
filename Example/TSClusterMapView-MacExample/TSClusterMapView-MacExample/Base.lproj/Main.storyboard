@@ -686,8 +686,110 @@
                             </mapView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="F24-Jc-PkX">
                                 <rect key="frame" x="0.0" y="0.0" width="120" height="300"/>
+                                <subviews>
+                                    <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CyA-fB-XIR">
+                                        <rect key="frame" x="6" y="261" width="108" height="24"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="glK-ZM-Sns">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment width="32">
+                                                    <nil key="label"/>
+                                                </segment>
+                                                <segment width="32" selected="YES" tag="1">
+                                                    <nil key="label"/>
+                                                </segment>
+                                                <segment width="32">
+                                                    <nil key="label"/>
+                                                </segment>
+                                            </segments>
+                                        </segmentedCell>
+                                    </segmentedControl>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="hTn-BW-WOK">
+                                        <rect key="frame" x="0.0" y="124" width="120" height="123"/>
+                                        <subviews>
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yT2-Zs-u2k">
+                                                <rect key="frame" x="8" y="83" width="25" height="25"/>
+                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="StreetLight" id="bRt-ei-lno"/>
+                                            </imageView>
+                                            <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="51s-bq-UGm">
+                                                <rect key="frame" x="96" y="81" width="19" height="27"/>
+                                                <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="JsA-43-fdY"/>
+                                                <connections>
+                                                    <action selector="lightChange:" target="XfG-lQ-9wD" id="b7h-qJ-CsF"/>
+                                                </connections>
+                                            </stepper>
+                                            <textField horizontalHuggingPriority="246" verticalHuggingPriority="750" horizontalCompressionResistancePriority="743" translatesAutoresizingMaskIntoConstraints="NO" id="aLB-h4-Fkr">
+                                                <rect key="frame" x="39" y="87" width="62" height="17"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="0" placeholderString="" id="LfW-e2-NCu">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <connections>
+                                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="D6T-Ob-J1u"/>
+                                                </connections>
+                                            </textField>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="51s-bq-UGm" firstAttribute="leading" secondItem="aLB-h4-Fkr" secondAttribute="trailing" id="CjI-lv-7uU"/>
+                                            <constraint firstItem="yT2-Zs-u2k" firstAttribute="leading" secondItem="hTn-BW-WOK" secondAttribute="leading" constant="8" id="DLb-zW-0vI"/>
+                                            <constraint firstItem="aLB-h4-Fkr" firstAttribute="leading" secondItem="yT2-Zs-u2k" secondAttribute="trailing" constant="8" id="La0-t8-KCR"/>
+                                            <constraint firstItem="51s-bq-UGm" firstAttribute="centerY" secondItem="yT2-Zs-u2k" secondAttribute="centerY" id="Ru1-Q1-O7p"/>
+                                            <constraint firstItem="yT2-Zs-u2k" firstAttribute="top" secondItem="hTn-BW-WOK" secondAttribute="top" constant="16" id="fJh-kj-lGX"/>
+                                            <constraint firstItem="aLB-h4-Fkr" firstAttribute="centerY" secondItem="yT2-Zs-u2k" secondAttribute="centerY" id="rAi-YL-Yxw"/>
+                                            <constraint firstAttribute="trailing" secondItem="51s-bq-UGm" secondAttribute="trailing" constant="8" id="zbi-78-PpZ"/>
+                                        </constraints>
+                                    </customView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="kOI-Zc-9Pm">
+                                        <rect key="frame" x="0.0" y="0.0" width="120" height="124"/>
+                                        <subviews>
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WX9-eC-Hv3">
+                                                <rect key="frame" x="8" y="83" width="31" height="25"/>
+                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Bathroom" id="Cxo-3R-3OO"/>
+                                            </imageView>
+                                            <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zIU-gf-nc1">
+                                                <rect key="frame" x="96" y="81" width="19" height="27"/>
+                                                <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="f2z-B9-Hbc"/>
+                                                <connections>
+                                                    <action selector="bathroomChange:" target="XfG-lQ-9wD" id="ixu-E0-mOs"/>
+                                                </connections>
+                                            </stepper>
+                                            <textField horizontalHuggingPriority="246" verticalHuggingPriority="750" horizontalCompressionResistancePriority="743" translatesAutoresizingMaskIntoConstraints="NO" id="SM3-lS-QIU">
+                                                <rect key="frame" x="45" y="87" width="56" height="17"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="0" placeholderString="" id="R1f-zK-HlT">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <connections>
+                                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="FBI-55-oyI"/>
+                                                </connections>
+                                            </textField>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="zIU-gf-nc1" firstAttribute="centerY" secondItem="WX9-eC-Hv3" secondAttribute="centerY" id="BsG-tx-jHW"/>
+                                            <constraint firstItem="SM3-lS-QIU" firstAttribute="centerY" secondItem="WX9-eC-Hv3" secondAttribute="centerY" id="OCd-T2-9Lp"/>
+                                            <constraint firstItem="WX9-eC-Hv3" firstAttribute="leading" secondItem="kOI-Zc-9Pm" secondAttribute="leading" constant="8" id="WFR-on-Nvf"/>
+                                            <constraint firstItem="SM3-lS-QIU" firstAttribute="leading" secondItem="WX9-eC-Hv3" secondAttribute="trailing" constant="8" id="f5b-ja-jIX"/>
+                                            <constraint firstAttribute="trailing" secondItem="zIU-gf-nc1" secondAttribute="trailing" constant="8" id="jfB-on-k1S"/>
+                                            <constraint firstItem="zIU-gf-nc1" firstAttribute="leading" secondItem="SM3-lS-QIU" secondAttribute="trailing" id="txi-h2-hLL"/>
+                                            <constraint firstItem="WX9-eC-Hv3" firstAttribute="top" secondItem="kOI-Zc-9Pm" secondAttribute="top" constant="16" id="uTW-BE-dcD"/>
+                                        </constraints>
+                                    </customView>
+                                </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="kOI-Zc-9Pm" secondAttribute="trailing" id="7hR-sD-l5u"/>
+                                    <constraint firstItem="CyA-fB-XIR" firstAttribute="leading" secondItem="F24-Jc-PkX" secondAttribute="leading" constant="8" id="DNz-U1-ymP"/>
+                                    <constraint firstAttribute="bottom" secondItem="kOI-Zc-9Pm" secondAttribute="bottom" id="Oqq-Xp-JCq"/>
                                     <constraint firstAttribute="width" constant="120" id="QOE-Nu-aoY"/>
+                                    <constraint firstItem="kOI-Zc-9Pm" firstAttribute="height" secondItem="hTn-BW-WOK" secondAttribute="height" id="Rc0-ml-4qM"/>
+                                    <constraint firstItem="CyA-fB-XIR" firstAttribute="top" secondItem="F24-Jc-PkX" secondAttribute="top" constant="16" id="Td6-Xh-ldS"/>
+                                    <constraint firstItem="hTn-BW-WOK" firstAttribute="top" secondItem="CyA-fB-XIR" secondAttribute="bottom" constant="16" id="avk-zq-lsg"/>
+                                    <constraint firstAttribute="trailing" secondItem="hTn-BW-WOK" secondAttribute="trailing" id="c5r-RF-9bi"/>
+                                    <constraint firstItem="hTn-BW-WOK" firstAttribute="leading" secondItem="F24-Jc-PkX" secondAttribute="leading" id="eOW-ZZ-oX5"/>
+                                    <constraint firstItem="kOI-Zc-9Pm" firstAttribute="top" secondItem="hTn-BW-WOK" secondAttribute="bottom" id="lQO-Jd-D7Z"/>
+                                    <constraint firstAttribute="trailing" secondItem="CyA-fB-XIR" secondAttribute="trailing" constant="8" id="ouZ-jC-Wy2"/>
+                                    <constraint firstItem="kOI-Zc-9Pm" firstAttribute="leading" secondItem="F24-Jc-PkX" secondAttribute="leading" id="zuF-W6-jz4"/>
                                 </constraints>
                             </customView>
                         </subviews>
@@ -701,10 +803,21 @@
                             <constraint firstAttribute="bottom" secondItem="F24-Jc-PkX" secondAttribute="bottom" id="wYh-wD-ApH"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="bathroomStepper" destination="zIU-gf-nc1" id="914-N6-5Gq"/>
+                        <outlet property="bathroomTextField" destination="SM3-lS-QIU" id="IRB-oP-yqp"/>
+                        <outlet property="lightStepper" destination="51s-bq-UGm" id="tJg-yU-m0e"/>
+                        <outlet property="lightTextField" destination="aLB-h4-Fkr" id="gpb-Po-m4s"/>
+                        <outlet property="mapView" destination="mf3-fI-mu7" id="C4Y-LN-2cq"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="75" y="655"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Bathroom" width="31" height="25"/>
+        <image name="StreetLight" width="25" height="25"/>
+    </resources>
 </document>

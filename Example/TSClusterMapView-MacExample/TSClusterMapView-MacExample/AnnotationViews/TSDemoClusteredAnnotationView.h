@@ -8,9 +8,10 @@
 
 
 #import <TSClusterMapView/TSRefreshedAnnotationView.h>
+#import <Quartz/Quartz.h>
 
 @interface TSDemoClusteredAnnotationView : TSRefreshedAnnotationView
 
-@property (strong, nonatomic) NSTextField *label;
+@property (strong, nonatomic) CATextLayer *textLayer;
 
 @end

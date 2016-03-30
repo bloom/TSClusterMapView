@@ -837,7 +837,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
                 
                 //Mapview seems to have a limit on set visible map rect let's manually split if we can't zoom anymore
                 if (isClusterAnnotation) {
-                    if(self.camera.altitude < 500) {
+                    if(self.camera.altitude < 300) {
                         [self deselectAnnotation:view.annotation animated:NO];
                         [self splitClusterToOriginal:clusterAnnotation];
                         return;
@@ -853,7 +853,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
                     
                     MKCoordinateRegion region = MKCoordinateRegionForMapRect(zoomTo);
                     
-                    if (zoomTo.size.width < 3000) {
+                    if (zoomTo.size.width < 3000 || zoomTo.size.height < 3000) {
                         
                         float ratio = self.camera.altitude/self.visibleMapRect.size.width;
                         

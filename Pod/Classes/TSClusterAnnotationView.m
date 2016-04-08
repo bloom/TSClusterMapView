@@ -13,6 +13,7 @@
 #import <TargetConditionals.h>
 #if !TARGET_OS_IOS
   #define UIView NSView // For our purposes, close enough
+  #define UIEdgeInsetsMake NSEdgeInsetsMake
 #endif
 
 @interface TSClusterAnnotationView ()

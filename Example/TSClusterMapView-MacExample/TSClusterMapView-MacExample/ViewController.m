@@ -154,14 +154,30 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
 
 - (IBAction)lightChange:(NSStepper *)stepper {
     
-    if (stepper.integerValue >= _bathroomAnnotationsAdded.count) {
+    if (stepper.integerValue > _streetLightAnnotationsAdded.count) {
         [self addNewStreetLight];
     }
-    else {
+    else if (stepper.integerValue >= 0){
         [self removeLastStreetLight];
+    }
+    stepper.maxValue = _streetLightAnnotations.count;
+    stepper.integerValue = _streetLightAnnotationsAdded.count;
+    self.lightTextField.stringValue = @(stepper.integerValue).stringValue;
+}
+
+
+
+- (IBAction)bathroomChange:(NSStepper *)stepper {
+    
+    if (stepper.integerValue > _bathroomAnnotationsAdded.count) {
+        [self addNewBathroom];
+    }
+    else if (stepper.integerValue >= 0){
+        [self removeLastBathroom];
     }
     stepper.maxValue = _bathroomAnnotations.count;
     stepper.integerValue = _bathroomAnnotationsAdded.count;
+    self.bathroomTextField.stringValue = @(stepper.integerValue).stringValue;
 }
 
 - (void)addNewBathroom {
@@ -210,9 +226,6 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
     [_mapView removeAnnotation:annotation];
 }
 
-
-- (IBAction)bathroomChange:(NSStepper *)stepper {
-}
 
 
 //#pragma mark - Tab Bar Delegate

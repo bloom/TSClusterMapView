@@ -24,7 +24,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
         self.image = [UIImage imageNamed:@"ClusterAnnotation"];
         self.frame = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
         
-        self.label = [[UILabel alloc] initWithFrame:self.frame];
+        self.label.frame = self.frame;
         self.label.textAlignment = NSTextAlignmentCenter;
         self.label.font = [UIFont systemFontOfSize:10];
         self.label.textColor = UIColorFromRGB(0x009fd6);
@@ -41,11 +41,24 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 }
 
 - (void)clusteringAnimation {
+    // Custom animations in here
+}
+
+- (void)setAnnotation:(id<MKAnnotation>)annotation {
+    [super setAnnotation:annotation];
     
-    ADClusterAnnotation *clusterAnnotation = (ADClusterAnnotation *)self.annotation;
-    
-    NSUInteger count = clusterAnnotation.clusterCount;
-    self.label.text = [self numberLabelText:count];
+    if (annotation) {
+        ADClusterAnnotation *clusterAnnotation = (ADClusterAnnotation *)annotation;
+        NSUInteger count = clusterAnnotation.clusterCount;
+        self.label.text = [self numberLabelText:count];
+    }
+}
+
+- (UILabel *)label {
+    if (!_label) {
+        _label = [[UILabel alloc] init];
+    }
+    return _label;
 }
 
 - (NSString *)numberLabelText:(float)count {

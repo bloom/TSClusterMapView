@@ -24,19 +24,15 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
         self.image = [NSImage imageNamed:@"ClusterAnnotation"];
         self.frame = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
         
-        self.textLayer = [[CATextLayer alloc] init];
-        self.textLayer.frame = self.frame;
-//        self.textField.textAlignment = NSTextAlignmentCenter;
+        CGRect frame = self.frame;
+        frame.origin.y += 10;
+        self.textLayer.frame = frame;
         self.textLayer.font = (__bridge CFTypeRef _Nullable)([NSFont systemFontOfSize:10]);
+        self.textLayer.fontSize = 10;
+        self.textLayer.contentsScale = [NSScreen mainScreen].backingScaleFactor;
+        [self.textLayer setAlignmentMode:@"center"];
         self.textLayer.foregroundColor = NSColorFromRGB(0x009fd6).CGColor;
         
-//        [self.textField setFrameOrigin:NSMakePoint(
-//                                            (NSWidth([parentView bounds]) - NSWidth([subview frame])) / 2,
-//                                            (NSHeight([parentView bounds]) - NSHeight([subview frame])) / 2
-//                                            )];
-//        [self.textField setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
-        
-//        self.textField.center = CGPointMake(self.image.size.width/2, self.image.size.height*.43);
         self.centerOffset = CGPointMake(0, -self.frame.size.height/2);
         
         [self.layer addSublayer:self.textLayer];
@@ -50,10 +46,27 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 - (void)clusteringAnimation {
     
-    ADClusterAnnotation *clusterAnnotation = (ADClusterAnnotation *)self.annotation;
+}
+
+- (CATextLayer *)textLayer {
+    if (!_textLayer) {
+        _textLayer = [[CATextLayer alloc] init];
+    }
+    return _textLayer;
+}
+
+- (void)setAnnotation:(id<MKAnnotation>)annotation {
+    [super setAnnotation:annotation];
     
-    NSUInteger count = clusterAnnotation.clusterCount;
-    self.textLayer.string = [self numberLabelText:count];
+    ADClusterAnnotation *clusterAnnotation = (ADClusterAnnotation *)annotation;
+    if (clusterAnnotation) {
+        NSUInteger count = clusterAnnotation.clusterCount;
+        
+        // Removes rid of the animation
+        self.textLayer.actions = @{@"contents": [NSNull null]};
+        
+        self.textLayer.string = [self numberLabelText:count];
+    }
 }
 
 - (NSString *)numberLabelText:(float)count {

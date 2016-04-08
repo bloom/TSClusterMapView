@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9F0E65DA4BB7C2B30A0320B7 /* libPods-TSClusterMapView-MacExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A3FB3D6DEF23D9C5E35A5AC /* libPods-TSClusterMapView-MacExample.a */; };
+		C522E8351CB7325C003E02D9 /* Mac-Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C522E8341CB7325C003E02D9 /* Mac-Images.xcassets */; };
 		C5F910B31CAC3DD4007DB2AE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910B21CAC3DD4007DB2AE /* AppDelegate.m */; };
 		C5F910B61CAC3DD4007DB2AE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910B51CAC3DD4007DB2AE /* main.m */; };
 		C5F910B91CAC3DD4007DB2AE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910B81CAC3DD4007DB2AE /* ViewController.m */; };
@@ -15,7 +16,6 @@
 		C5F910BE1CAC3DD4007DB2AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5F910BC1CAC3DD4007DB2AE /* Main.storyboard */; };
 		C5F910C91CAC4518007DB2AE /* CDStreetlights.json in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C61CAC4518007DB2AE /* CDStreetlights.json */; };
 		C5F910CA1CAC4518007DB2AE /* CDToilets.json in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C71CAC4518007DB2AE /* CDToilets.json */; };
-		C5F910CB1CAC4518007DB2AE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5F910C81CAC4518007DB2AE /* Images.xcassets */; };
 		C5F910E41CAC46D9007DB2AE /* ADBaseAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910DC1CAC46D9007DB2AE /* ADBaseAnnotation.m */; };
 		C5F910E51CAC46D9007DB2AE /* TSBathroomAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910DE1CAC46D9007DB2AE /* TSBathroomAnnotation.m */; };
 		C5F910E61CAC46D9007DB2AE /* TSStreetLightAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5F910E01CAC46D9007DB2AE /* TSStreetLightAnnotation.m */; };
@@ -26,6 +26,7 @@
 		41CD5DEC0BAC21C9ED2C9532 /* Pods-TSClusterMapView-MacExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSClusterMapView-MacExample.release.xcconfig"; path = "../Pods/Target Support Files/Pods-TSClusterMapView-MacExample/Pods-TSClusterMapView-MacExample.release.xcconfig"; sourceTree = "<group>"; };
 		746C911D2998F526D6824658 /* Pods-TSClusterMapView-MacExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSClusterMapView-MacExample.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-TSClusterMapView-MacExample/Pods-TSClusterMapView-MacExample.debug.xcconfig"; sourceTree = "<group>"; };
 		7A3FB3D6DEF23D9C5E35A5AC /* libPods-TSClusterMapView-MacExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TSClusterMapView-MacExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C522E8341CB7325C003E02D9 /* Mac-Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Mac-Images.xcassets"; sourceTree = "<group>"; };
 		C5F910AE1CAC3DD4007DB2AE /* TSClusterMapView-MacExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TSClusterMapView-MacExample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5F910B11CAC3DD4007DB2AE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C5F910B21CAC3DD4007DB2AE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -37,7 +38,6 @@
 		C5F910BF1CAC3DD4007DB2AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5F910C61CAC4518007DB2AE /* CDStreetlights.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CDStreetlights.json; sourceTree = "<group>"; };
 		C5F910C71CAC4518007DB2AE /* CDToilets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CDToilets.json; sourceTree = "<group>"; };
-		C5F910C81CAC4518007DB2AE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C5F910DB1CAC46D9007DB2AE /* ADBaseAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADBaseAnnotation.h; sourceTree = "<group>"; };
 		C5F910DC1CAC46D9007DB2AE /* ADBaseAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADBaseAnnotation.m; sourceTree = "<group>"; };
 		C5F910DD1CAC46D9007DB2AE /* TSBathroomAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSBathroomAnnotation.h; sourceTree = "<group>"; };
@@ -116,9 +116,9 @@
 		C5F910C51CAC4518007DB2AE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C522E8341CB7325C003E02D9 /* Mac-Images.xcassets */,
 				C5F910C61CAC4518007DB2AE /* CDStreetlights.json */,
 				C5F910C71CAC4518007DB2AE /* CDToilets.json */,
-				C5F910C81CAC4518007DB2AE /* Images.xcassets */,
 			);
 			name = Resources;
 			path = ../../TSClusterMapView/ClusterDemo/Resources;
@@ -215,10 +215,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5F910BB1CAC3DD4007DB2AE /* Assets.xcassets in Resources */,
-				C5F910CB1CAC4518007DB2AE /* Images.xcassets in Resources */,
 				C5F910CA1CAC4518007DB2AE /* CDToilets.json in Resources */,
 				C5F910BE1CAC3DD4007DB2AE /* Main.storyboard in Resources */,
 				C5F910C91CAC4518007DB2AE /* CDStreetlights.json in Resources */,
+				C522E8351CB7325C003E02D9 /* Mac-Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

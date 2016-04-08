@@ -830,15 +830,14 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     if (_clusterZoomsOnTap){
         for (UITouch *touch in touches) {
-            
-            TSClusterAnnotationView *view = [self clusterAnnotationForSubview:touch.view];
+            TSClusterAnnotationView *view = (TSClusterAnnotationView *)[self clusterAnnotationForSubview:touch.view];
             [self expandOnView:view];
         }
     }
 }
 #endif
 
-- (void)expandOnView:(TSClusterAnnotationView *)view {
+- (void)expandOnView:(MKAnnotationView *)view {
     
     if (view) {
         ADClusterAnnotation *clusterAnnotation = view.annotation;

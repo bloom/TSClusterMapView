@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="2h4-6r-fNb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="2h4-6r-fNb">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -32,17 +32,17 @@
                         <viewControllerLayoutGuide type="bottom" id="XdT-y2-VGv"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="deA-x0-VJI">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="BFz-fq-RjB" customClass="TSClusterMapView">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="599"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="431"/>
                                 <connections>
                                     <outlet property="delegate" destination="bV8-3H-Edx" id="wrQ-Vn-2Oe"/>
                                 </connections>
                             </mapView>
                             <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t7T-3w-Ldr">
-                                <rect key="frame" x="0.0" y="687" width="414" height="49"/>
+                                <rect key="frame" x="0.0" y="519" width="320" height="49"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="49" id="m18-0Z-fem"/>
@@ -56,7 +56,7 @@
                                 </connections>
                             </tabBar>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kkO-TM-PwV">
-                                <rect key="frame" x="0.0" y="643" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="475" width="320" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="320" id="AhH-kH-Fyb"/>
                                     <constraint firstAttribute="height" constant="44" id="Hvv-iT-Vb8"/>
@@ -70,7 +70,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="eIf-AQ-Ff5"/>
                                     <barButtonItem width="94" style="plain" id="VkL-pB-8I6">
                                         <stepper key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" id="XLp-LT-P49">
-                                            <rect key="frame" x="-47" y="-14" width="94" height="29"/>
+                                            <rect key="frame" x="113" y="7.5" width="94" height="29"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <connections>
                                                 <action selector="stepperValueChanged:" destination="bV8-3H-Edx" eventType="valueChanged" id="z88-3g-c15"/>
@@ -91,7 +91,7 @@
                                 </variation>
                             </toolbar>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="st3-K2-lqv">
-                                <rect key="frame" x="0.0" y="599" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="431" width="320" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="USB-zw-1OH"/>
                                 </constraints>
@@ -99,7 +99,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="fIh-Ns-T9I"/>
                                     <barButtonItem style="plain" id="lE8-Ee-tmz">
                                         <slider key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="20" minValue="1" maxValue="100" continuous="NO" id="43g-Ev-1XX">
-                                            <rect key="frame" x="14" y="6" width="222" height="32"/>
+                                            <rect key="frame" x="38" y="6" width="222" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <connections>
                                                 <action selector="sliderValueChanged:" destination="bV8-3H-Edx" eventType="valueChanged" id="iU2-bh-dLC"/>
@@ -111,7 +111,7 @@
                                 </items>
                             </toolbar>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" translatesAutoresizingMaskIntoConstraints="NO" id="lE3-0p-jFP">
-                                <rect key="frame" x="0.0" y="599" width="414" height="3"/>
+                                <rect key="frame" x="0.0" y="431" width="320" height="2.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="320" id="e73-Zu-6pq"/>
                                     <constraint firstAttribute="height" constant="2" id="hQI-HC-Jby"/>
@@ -123,7 +123,7 @@
                                 </variation>
                             </progressView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yyq-po-JOS">
-                                <rect key="frame" x="356" y="610" width="42" height="21"/>
+                                <rect key="frame" x="262" y="442" width="42" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="42" id="Gbk-nH-Zn5"/>
                                 </constraints>
@@ -157,7 +157,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="cpp-TE-B3n">
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="2" id="zVg-tm-hei">
-                            <rect key="frame" x="56" y="7" width="302" height="30"/>
+                            <rect key="frame" x="9" y="7" width="302" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <segments>
                                 <segment title="None"/>
@@ -170,7 +170,7 @@
                             </connections>
                         </segmentedControl>
                     </navigationItem>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="bathroomTabBarItem" destination="3TL-Jc-YGW" id="loS-8C-fKw"/>
                         <outlet property="bottomConstraint" destination="lMd-YB-Cjp" id="jBU-6E-m13"/>
@@ -186,7 +186,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eYT-2I-6HF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="434" y="191"/>
+            <point key="canvasLocation" x="296" y="193"/>
         </scene>
     </scenes>
     <resources>

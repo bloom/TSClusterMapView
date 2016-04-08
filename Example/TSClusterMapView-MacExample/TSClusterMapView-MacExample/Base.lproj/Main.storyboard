@@ -692,16 +692,13 @@
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="glK-ZM-Sns">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment width="32">
-                                                    <nil key="label"/>
-                                                </segment>
-                                                <segment width="32" selected="YES" tag="1">
-                                                    <nil key="label"/>
-                                                </segment>
-                                                <segment width="32">
-                                                    <nil key="label"/>
-                                                </segment>
+                                                <segment label="S" width="32"/>
+                                                <segment label="M" width="32" selected="YES" tag="1"/>
+                                                <segment label="L" width="32"/>
                                             </segments>
+                                            <connections>
+                                                <action selector="bufferChange:" target="XfG-lQ-9wD" id="MNU-al-5nz"/>
+                                            </connections>
                                         </segmentedCell>
                                     </segmentedControl>
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="hTn-BW-WOK">
@@ -729,14 +726,43 @@
                                                     <outlet property="delegate" destination="XfG-lQ-9wD" id="D6T-Ob-J1u"/>
                                                 </connections>
                                             </textField>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5RD-e4-b4a">
+                                                <rect key="frame" x="58" y="47" width="60" height="32"/>
+                                                <buttonCell key="cell" type="push" title="All" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Kx6-1Z-xx5">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="addAllLights:" target="XfG-lQ-9wD" id="62q-I5-kTf"/>
+                                                </connections>
+                                            </button>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sJb-7T-Mb0">
+                                                <rect key="frame" x="2" y="47" width="60" height="32"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="21" id="Ngo-8f-Cm8"/>
+                                                </constraints>
+                                                <buttonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BMM-sp-xxI">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="removeAllLights:" target="XfG-lQ-9wD" id="98m-GQ-NgN"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="51s-bq-UGm" firstAttribute="leading" secondItem="aLB-h4-Fkr" secondAttribute="trailing" id="CjI-lv-7uU"/>
                                             <constraint firstItem="yT2-Zs-u2k" firstAttribute="leading" secondItem="hTn-BW-WOK" secondAttribute="leading" constant="8" id="DLb-zW-0vI"/>
                                             <constraint firstItem="aLB-h4-Fkr" firstAttribute="leading" secondItem="yT2-Zs-u2k" secondAttribute="trailing" constant="8" id="La0-t8-KCR"/>
+                                            <constraint firstItem="sJb-7T-Mb0" firstAttribute="leading" secondItem="hTn-BW-WOK" secondAttribute="leading" constant="8" id="Of4-Hy-JJv"/>
                                             <constraint firstItem="51s-bq-UGm" firstAttribute="centerY" secondItem="yT2-Zs-u2k" secondAttribute="centerY" id="Ru1-Q1-O7p"/>
+                                            <constraint firstItem="5RD-e4-b4a" firstAttribute="centerY" secondItem="sJb-7T-Mb0" secondAttribute="centerY" id="SR3-vg-jgq"/>
                                             <constraint firstItem="yT2-Zs-u2k" firstAttribute="top" secondItem="hTn-BW-WOK" secondAttribute="top" constant="16" id="fJh-kj-lGX"/>
+                                            <constraint firstItem="5RD-e4-b4a" firstAttribute="width" secondItem="sJb-7T-Mb0" secondAttribute="width" id="j8T-7f-JZZ"/>
+                                            <constraint firstItem="5RD-e4-b4a" firstAttribute="leading" secondItem="sJb-7T-Mb0" secondAttribute="trailing" constant="8" id="ljO-cL-vPP"/>
                                             <constraint firstItem="aLB-h4-Fkr" firstAttribute="centerY" secondItem="yT2-Zs-u2k" secondAttribute="centerY" id="rAi-YL-Yxw"/>
+                                            <constraint firstAttribute="trailing" secondItem="5RD-e4-b4a" secondAttribute="trailing" constant="8" id="wsU-kf-blV"/>
+                                            <constraint firstItem="sJb-7T-Mb0" firstAttribute="top" secondItem="yT2-Zs-u2k" secondAttribute="bottom" constant="8" id="yn4-Kc-t32"/>
                                             <constraint firstAttribute="trailing" secondItem="51s-bq-UGm" secondAttribute="trailing" constant="8" id="zbi-78-PpZ"/>
                                         </constraints>
                                     </customView>
@@ -765,15 +791,42 @@
                                                     <outlet property="delegate" destination="XfG-lQ-9wD" id="FBI-55-oyI"/>
                                                 </connections>
                                             </textField>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VEm-ZT-wnR">
+                                                <rect key="frame" x="2" y="47" width="60" height="32"/>
+                                                <buttonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dIc-wp-Jq7">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="removeAllBathrooms:" target="XfG-lQ-9wD" id="Kyu-fW-yXh"/>
+                                                </connections>
+                                            </button>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HSM-N6-J1a">
+                                                <rect key="frame" x="58" y="47" width="60" height="32"/>
+                                                <buttonCell key="cell" type="push" title="All" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XO7-na-q0j">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="addAllBathrooms:" target="XfG-lQ-9wD" id="NRz-Y6-p8o"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="zIU-gf-nc1" firstAttribute="centerY" secondItem="WX9-eC-Hv3" secondAttribute="centerY" id="BsG-tx-jHW"/>
                                             <constraint firstItem="SM3-lS-QIU" firstAttribute="centerY" secondItem="WX9-eC-Hv3" secondAttribute="centerY" id="OCd-T2-9Lp"/>
+                                            <constraint firstItem="HSM-N6-J1a" firstAttribute="height" secondItem="VEm-ZT-wnR" secondAttribute="height" id="VeS-Bt-pEN"/>
                                             <constraint firstItem="WX9-eC-Hv3" firstAttribute="leading" secondItem="kOI-Zc-9Pm" secondAttribute="leading" constant="8" id="WFR-on-Nvf"/>
                                             <constraint firstItem="SM3-lS-QIU" firstAttribute="leading" secondItem="WX9-eC-Hv3" secondAttribute="trailing" constant="8" id="f5b-ja-jIX"/>
                                             <constraint firstAttribute="trailing" secondItem="zIU-gf-nc1" secondAttribute="trailing" constant="8" id="jfB-on-k1S"/>
+                                            <constraint firstItem="HSM-N6-J1a" firstAttribute="leading" secondItem="VEm-ZT-wnR" secondAttribute="trailing" constant="8" id="myi-GT-D08"/>
+                                            <constraint firstAttribute="trailing" secondItem="HSM-N6-J1a" secondAttribute="trailing" constant="8" id="q4t-6j-BR9"/>
+                                            <constraint firstItem="VEm-ZT-wnR" firstAttribute="leading" secondItem="kOI-Zc-9Pm" secondAttribute="leading" constant="8" id="qW8-kC-ksd"/>
+                                            <constraint firstItem="VEm-ZT-wnR" firstAttribute="width" secondItem="HSM-N6-J1a" secondAttribute="width" id="qxg-j8-AaE"/>
                                             <constraint firstItem="zIU-gf-nc1" firstAttribute="leading" secondItem="SM3-lS-QIU" secondAttribute="trailing" id="txi-h2-hLL"/>
                                             <constraint firstItem="WX9-eC-Hv3" firstAttribute="top" secondItem="kOI-Zc-9Pm" secondAttribute="top" constant="16" id="uTW-BE-dcD"/>
+                                            <constraint firstItem="HSM-N6-J1a" firstAttribute="centerY" secondItem="VEm-ZT-wnR" secondAttribute="centerY" id="v9x-vZ-bst"/>
+                                            <constraint firstItem="VEm-ZT-wnR" firstAttribute="top" secondItem="WX9-eC-Hv3" secondAttribute="bottom" constant="8" id="yTP-4N-99h"/>
                                         </constraints>
                                     </customView>
                                 </subviews>
@@ -792,6 +845,9 @@
                                     <constraint firstItem="kOI-Zc-9Pm" firstAttribute="leading" secondItem="F24-Jc-PkX" secondAttribute="leading" id="zuF-W6-jz4"/>
                                 </constraints>
                             </customView>
+                            <progressIndicator wantsLayer="YES" maxValue="1" displayedWhenStopped="NO" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="egg-mW-eCY">
+                                <rect key="frame" x="120" y="281" width="360" height="20"/>
+                            </progressIndicator>
                         </subviews>
                         <constraints>
                             <constraint firstItem="F24-Jc-PkX" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="1np-TW-Yh8"/>
@@ -799,13 +855,18 @@
                             <constraint firstItem="mf3-fI-mu7" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="B2W-Nb-Paf"/>
                             <constraint firstItem="F24-Jc-PkX" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="MJx-kM-fXL"/>
                             <constraint firstAttribute="trailing" secondItem="mf3-fI-mu7" secondAttribute="trailing" id="SB4-ba-FdK"/>
+                            <constraint firstItem="egg-mW-eCY" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="Wyc-Fn-Zqh"/>
+                            <constraint firstItem="egg-mW-eCY" firstAttribute="leading" secondItem="F24-Jc-PkX" secondAttribute="trailing" id="emo-6A-ons"/>
                             <constraint firstAttribute="bottom" secondItem="mf3-fI-mu7" secondAttribute="bottom" id="tmm-Rm-gLD"/>
                             <constraint firstAttribute="bottom" secondItem="F24-Jc-PkX" secondAttribute="bottom" id="wYh-wD-ApH"/>
+                            <constraint firstAttribute="trailing" secondItem="egg-mW-eCY" secondAttribute="trailing" id="zxy-J6-Md5"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="bathroomStepper" destination="zIU-gf-nc1" id="914-N6-5Gq"/>
                         <outlet property="bathroomTextField" destination="SM3-lS-QIU" id="IRB-oP-yqp"/>
+                        <outlet property="bufferSegmentedCell" destination="glK-ZM-Sns" id="GZI-wc-i1p"/>
+                        <outlet property="buildProgress" destination="egg-mW-eCY" id="OQf-vb-1Zy"/>
                         <outlet property="lightStepper" destination="51s-bq-UGm" id="tJg-yU-m0e"/>
                         <outlet property="lightTextField" destination="aLB-h4-Fkr" id="gpb-Po-m4s"/>
                         <outlet property="mapView" destination="mf3-fI-mu7" id="C4Y-LN-2cq"/>

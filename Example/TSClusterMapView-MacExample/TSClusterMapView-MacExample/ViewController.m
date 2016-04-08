@@ -22,15 +22,15 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     [_mapView setRegion:MKCoordinateRegionMake(CLLocationCoordinate2DMake(48.857617, 2.338820), MKCoordinateSpanMake(1.0, 1.0))];
     _mapView.clusterDiscrimination = 1.0;
     
-//    [_tabBar setSelectedItem:_bathroomTabBarItem];
+    //    [_tabBar setSelectedItem:_bathroomTabBarItem];
     
     [self parseJsonData];
     
-//    [self refreshBadges];
+    //    [self refreshBadges];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(kdTreeLoadingProgress:)
@@ -95,12 +95,12 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
     
     _startTime = [NSDate date];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//        if (annotations.count > 10000) {
-//            [_progressView setHidden:NO];
-//        }
-//        else {
-//            [_progressView setHidden:YES];
-//        }
+                if (annotations.count > 10000) {
+                    [_buildProgress setHidden:NO];
+                }
+                else {
+                    [_buildProgress setHidden:YES];
+                }
     }];
 }
 
@@ -109,8 +109,8 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
     NSLog(@"Took %f seconds", -[_startTime timeIntervalSinceNow]);
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//        [_progressView setHidden:YES];
-//        _progressView.progress = 0.0;
+                [_buildProgress setHidden:YES];
+                _buildProgress.doubleValue = 0.0;
     }];
 }
 
@@ -228,108 +228,12 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
 
 
 
-//#pragma mark - Tab Bar Delegate
-//
-//- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-//    
-//    if (_tabBar.selectedItem == _bathroomTabBarItem) {
-//        _stepper.value = _bathroomAnnotationsAdded.count;
-//        _stepper.minimumValue = 0;
-//        _stepper.maximumValue = _bathroomAnnotations.count;
-//    }
-//    else if (_tabBar.selectedItem == _streetLightsTabBarItem) {
-//        _stepper.value = _streetLightAnnotationsAdded.count;
-//        _stepper.minimumValue = 0;
-//        _stepper.maximumValue = _streetLightAnnotations.count;
-//    }
-//}
-
-
-#pragma mark - Controls
-
-/*
-- (IBAction)addAll:(id)sender {
+- (IBAction)bufferChange:(NSSegmentedCell *)sender {
     
-    if (_tabBar.selectedItem == _bathroomTabBarItem) {
-        NSLog(@"Adding All %@", CDToiletJsonFile);
-        
-        [_mapView addClusteredAnnotations:_bathroomAnnotations];
-        _bathroomAnnotationsAdded = [NSMutableArray arrayWithArray:_bathroomAnnotations];
-//        _stepper.value = _bathroomAnnotationsAdded.count;
-    }
-    else if (_tabBar.selectedItem == _streetLightsTabBarItem) {
-        NSLog(@"Adding All %@", CDStreetLightJsonFile);
-        
-        [_mapView addClusteredAnnotations:_streetLightAnnotations];
-        _streetLightAnnotationsAdded = [NSMutableArray arrayWithArray:_streetLightAnnotations];
-//        _stepper.value = _streetLightAnnotationsAdded.count;
-    }
-    
-    [self refreshBadges];
-}
-
-- (IBAction)removeAll:(id)sender {
-    
-    if (_tabBar.selectedItem == _bathroomTabBarItem) {
-        [_mapView removeAnnotations:_bathroomAnnotationsAdded];
-        [_bathroomAnnotationsAdded removeAllObjects];
-        
-        NSLog(@"Removing All %@", CDToiletJsonFile);
-    }
-    else if (_tabBar.selectedItem == _streetLightsTabBarItem) {
-        [_mapView removeAnnotations:_streetLightAnnotationsAdded];
-        [_streetLightAnnotationsAdded removeAllObjects];
-        
-        NSLog(@"Removing All %@", CDStreetLightJsonFile);
-    }
-    
-    [self refreshBadges];
-}
-
-- (IBAction)stepperValueChanged:(id)sender {
-    
-    if (_tabBar.selectedItem == _bathroomTabBarItem) {
-        
-        if (_stepper.value >= _bathroomAnnotationsAdded.count) {
-            [self addNewBathroom];
-        }
-        else {
-            [self removeLastBathroom];
-        }
-        _stepper.maximumValue = _bathroomAnnotations.count;
-        _stepper.value = _bathroomAnnotationsAdded.count;
-    }
-    else if (_tabBar.selectedItem == _streetLightsTabBarItem) {
-        if (_stepper.value >= _streetLightAnnotationsAdded.count) {
-            [self addNewStreetLight];
-        }
-        else {
-            [self removeLastStreetLight];
-        }
-        _stepper.maximumValue = _streetLightAnnotations.count;
-        _stepper.value = _streetLightAnnotationsAdded.count;
-    }
-    
-    [self refreshBadges];
-}
-
-- (void)refreshBadges {
-    
-    _bathroomTabBarItem.badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)_bathroomAnnotationsAdded.count];
-    _streetLightsTabBarItem.badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)_streetLightAnnotationsAdded.count];
-}
-
-
-
-
-
-
-- (IBAction)segmentedControlValueChanged:(id)sender {
-    
-    switch (_segmentedControl.selectedSegmentIndex) {
-        case 0:
-            _mapView.clusterEdgeBufferSize = ADClusterBufferNone;
-            break;
+    switch (sender.selectedSegment + 1) {
+            //        case 0:
+            //            _mapView.clusterEdgeBufferSize = ADClusterBufferNone;
+            //            break;
             
         case 1:
             _mapView.clusterEdgeBufferSize = ADClusterBufferSmall;
@@ -347,11 +251,57 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
             break;
     }
 }
-- (IBAction)sliderValueChanged:(id)sender {
+
+
+#pragma mark - Controls
+
+- (IBAction)addAllBathrooms:(id)sender {
     
-    _mapView.clusterPreferredVisibleCount = roundf(_slider.value);
-    _label.text = [NSString stringWithFormat:@"%lu", (unsigned long)_mapView.clusterPreferredVisibleCount];
+    NSLog(@"Adding All %@", CDToiletJsonFile);
+    
+    [_mapView addClusteredAnnotations:_bathroomAnnotations];
+    _bathroomAnnotationsAdded = [NSMutableArray arrayWithArray:_bathroomAnnotations];
+    
+    
+    self.bathroomTextField.stringValue = @(_bathroomAnnotationsAdded.count).stringValue;
 }
+
+- (IBAction)addAllLights:(id)sender {
+    NSLog(@"Adding All %@", CDStreetLightJsonFile);
+    
+    [_mapView addClusteredAnnotations:_streetLightAnnotations];
+    _streetLightAnnotationsAdded = [NSMutableArray arrayWithArray:_streetLightAnnotations];
+    
+    self.lightTextField.stringValue = @(_streetLightAnnotationsAdded.count).stringValue;
+}
+
+- (IBAction)removeAllBathrooms:(id)sender {
+    
+    [_mapView removeAnnotations:_bathroomAnnotationsAdded];
+    [_bathroomAnnotationsAdded removeAllObjects];
+    
+    NSLog(@"Removing All %@", CDToiletJsonFile);
+    
+    self.bathroomTextField.stringValue = @(_bathroomAnnotationsAdded.count).stringValue;
+}
+
+
+- (IBAction)removeAllLights:(id)sender {
+    [_mapView removeAnnotations:_streetLightAnnotationsAdded];
+    [_streetLightAnnotationsAdded removeAllObjects];
+    
+    NSLog(@"Removing All %@", CDStreetLightJsonFile);
+    
+    self.lightTextField.stringValue = @(_streetLightAnnotationsAdded.count).stringValue;
+}
+
+
+/*
+ - (IBAction)sliderValueChanged:(id)sender {
+ 
+ _mapView.clusterPreferredVisibleCount = roundf(_slider.value);
+ _label.text = [NSString stringWithFormat:@"%lu", (unsigned long)_mapView.clusterPreferredVisibleCount];
+ }
  
  */
 
@@ -391,7 +341,7 @@ static NSString * const kBathroomAnnotationImage = @"BathroomAnnotation";
     NSNumber *number = [notification object];
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//        _progressView.progress = number.floatValue;
+                _buildProgress.doubleValue = number.floatValue;
     }];
 }
 

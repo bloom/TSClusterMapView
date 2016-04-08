@@ -25,6 +25,8 @@
 @property (weak) IBOutlet NSTextField *bathroomTextField;
 @property (weak) IBOutlet NSStepper *bathroomStepper;
 @property (weak) IBOutlet NSStepper *lightStepper;
+@property (weak) IBOutlet NSSegmentedCell *bufferSegmentedCell;
+@property (weak) IBOutlet NSProgressIndicator *buildProgress;
 
 @end
 

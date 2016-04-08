@@ -608,8 +608,6 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         
         [_clusterOperationQueue cancelAllOperations];
         
-        [self mapViewWillBeginClusteringAnimation:self];
-        
         __weak TSClusterMapView *weakSelf = self;
         TSClusterOperation *operation = [TSClusterOperation mapView:self
                                                                rect:clusteredMapRect
@@ -711,7 +709,7 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         [self deselectAnnotation:view.annotation animated:NO];
         
 #if TS_TARGET_MAC
-        [self selectedView:view];
+        [self expandOnView:view];
 #endif
     }
     
@@ -833,15 +831,14 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     if (_clusterZoomsOnTap){
         for (UITouch *touch in touches) {
             
-            [self selectedView:touch.view];
+            TSClusterAnnotationView *view = [self clusterAnnotationForSubview:touch.view];
+            [self expandOnView:view];
         }
     }
 }
 #endif
 
-- (void)selectedView:(UIView *)eventView {
-    
-    TSClusterAnnotationView *view = [self clusterAnnotationForSubview:eventView];
+- (void)expandOnView:(TSClusterAnnotationView *)view {
     
     if (view) {
         ADClusterAnnotation *clusterAnnotation = view.annotation;

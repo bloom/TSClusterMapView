@@ -608,8 +608,6 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
         
         [_clusterOperationQueue cancelAllOperations];
         
-        [self mapViewWillBeginClusteringAnimation:self];
-        
         __weak TSClusterMapView *weakSelf = self;
         TSClusterOperation *operation = [TSClusterOperation mapView:self
                                                                rect:clusteredMapRect
@@ -709,6 +707,10 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     if (_clusterZoomsOnTap && isClusterAnnotation){
         [self deselectAnnotation:view.annotation animated:NO];
+        
+#if TS_TARGET_MAC
+        [self expandOnView:view];
+#endif
     }
     
     if ([_clusterDelegate respondsToSelector:@selector(mapView:didSelectAnnotationView:)]) {
@@ -828,54 +830,57 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     
     if (_clusterZoomsOnTap){
         for (UITouch *touch in touches) {
-            
             TSClusterAnnotationView *view = [self clusterAnnotationForSubview:touch.view];
-            
-            if (view) {
-                ADClusterAnnotation *clusterAnnotation = view.annotation;
-                BOOL isClusterAnnotation = clusterAnnotation.type == ADClusterAnnotationTypeCluster;
-                
-                //Mapview seems to have a limit on set visible map rect let's manually split if we can't zoom anymore
-                if (isClusterAnnotation) {
-                    if(self.camera.altitude < 300) {
-                        [self deselectAnnotation:view.annotation animated:NO];
-                        [self splitClusterToOriginal:clusterAnnotation];
-                        return;
-                    }
-                    [self deselectAnnotation:view.annotation animated:NO];
-                    
-                    MKMapRect zoomTo = ((ADClusterAnnotation *)view.annotation).cluster.mapRect;
-                    zoomTo = [self mapRectThatFits:zoomTo edgePadding:UIEdgeInsetsMake(view.frame.size.height, view.frame.size.width, view.frame.size.height, view.frame.size.width)];
-                    
-                    if (MKMapRectSizeIsGreaterThanOrEqual(zoomTo, self.visibleMapRect)) {
-                        zoomTo = MKMapRectInset(zoomTo, zoomTo.size.width/4, zoomTo.size.width/4);
-                    }
-                    
-                    MKCoordinateRegion region = MKCoordinateRegionForMapRect(zoomTo);
-                    
-                    if (zoomTo.size.width < 3000 || zoomTo.size.height < 3000) {
-                        
-                        float ratio = self.camera.altitude/self.visibleMapRect.size.width;
-                        
-                        float altitude = ratio*zoomTo.size.width;
-                        if (altitude < 280) {
-                            altitude = 280;
-                        }
-                        
-                        MKMapCamera *camera = [self.camera copy];
-                        camera.altitude = altitude;
-                        camera.centerCoordinate = region.center;
-                        [self setCamera:camera animated:YES];
-                    }
-                    else {
-                        [self setRegion:region animated:YES];
-                    }
-                }
-            }
+            [self expandOnView:view];
         }
     }
 }
 #endif
+
+- (void)expandOnView:(MKAnnotationView *)view {
+    
+    if (view) {
+        ADClusterAnnotation *clusterAnnotation = view.annotation;
+        BOOL isClusterAnnotation = clusterAnnotation.type == ADClusterAnnotationTypeCluster;
+        
+        //Mapview seems to have a limit on set visible map rect let's manually split if we can't zoom anymore
+        if (isClusterAnnotation) {
+            if(self.camera.altitude < 300) {
+                [self deselectAnnotation:view.annotation animated:NO];
+                [self splitClusterToOriginal:clusterAnnotation];
+                return;
+            }
+            [self deselectAnnotation:view.annotation animated:NO];
+            
+            MKMapRect zoomTo = ((ADClusterAnnotation *)view.annotation).cluster.mapRect;
+            zoomTo = [self mapRectThatFits:zoomTo edgePadding:UIEdgeInsetsMake(view.frame.size.height, view.frame.size.width, view.frame.size.height, view.frame.size.width)];
+            
+            if (MKMapRectSizeIsGreaterThanOrEqual(zoomTo, self.visibleMapRect)) {
+                zoomTo = MKMapRectInset(zoomTo, zoomTo.size.width/4, zoomTo.size.width/4);
+            }
+            
+            MKCoordinateRegion region = MKCoordinateRegionForMapRect(zoomTo);
+            
+            if (zoomTo.size.width < 3000 || zoomTo.size.height < 3000) {
+                
+                float ratio = self.camera.altitude/self.visibleMapRect.size.width;
+                
+                float altitude = ratio*zoomTo.size.width;
+                if (altitude < 280) {
+                    altitude = 280;
+                }
+                
+                MKMapCamera *camera = [self.camera copy];
+                camera.altitude = altitude;
+                camera.centerCoordinate = region.center;
+                [self setCamera:camera animated:YES];
+            }
+            else {
+                [self setRegion:region animated:YES];
+            }
+        }
+    }
+}
 
 - (TSClusterAnnotationView *)clusterAnnotationForSubview:(UIView *)view {
     

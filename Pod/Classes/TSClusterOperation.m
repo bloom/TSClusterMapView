@@ -98,9 +98,27 @@
 
 - (void)clusterInMapRect:(MKMapRect)clusteredMapRect {
     
+    if (self.isCancelled) {
+        NSLog(@"isCancelled");
+        if (_finishedBlock) {
+            _finishedBlock(clusteredMapRect, NO, nil);
+        }
+        return;
+    }
+    
     if (!_rootMapCluster.clusterCount) {
         [self resetAll];
         self.finishedBlock(MKMapRectMake(0, 0, 0, 0), false, nil);
+        return;
+    }
+    
+    [_mapView mapViewWillBeginClusteringAnimation:_mapView];
+    
+    if (self.isCancelled) {
+        NSLog(@"isCancelled");
+        if (_finishedBlock) {
+            _finishedBlock(clusteredMapRect, NO, nil);
+        }
         return;
     }
     
@@ -125,6 +143,7 @@
     NSSet *clustersToShowOnMap = [_rootMapCluster find:maxNumberOfClusters childrenInMapRect:clusteredMapRect annotationViewSize:annotationViewSize allowOverlap:shouldOverlap];
     
     if (self.isCancelled) {
+        NSLog(@"isCancelled");
         if (_finishedBlock) {
             _finishedBlock(clusteredMapRect, NO, nil);
         }
@@ -165,6 +184,7 @@
     NSMutableSet <NSArray *> *stillNeedsMatch = [[NSMutableSet alloc] initWithCapacity:10];
     
     if (self.isCancelled) {
+        NSLog(@"isCancelled");
         if (_finishedBlock) {
             _finishedBlock(clusteredMapRect, NO, nil);
         }
@@ -204,6 +224,7 @@
                 else {
                     //Ran out of annotations off screen we'll come back after more have been sorted and reassign one that is available
                     [stillNeedsMatch addObject:@[cluster, annotation]];
+                    [unMatchedClusters removeObject:cluster];
                 }
             }
             
@@ -235,6 +256,22 @@
         //the section of the cluster tree does not include this annotation
         [unmatchedAnnotations addObject:annotation];
         [annotation shouldReset];
+    }
+    
+    //Still need unmatched for a split into multiple from cluster
+    if (stillNeedsMatch.count) {
+        for (NSArray *array in stillNeedsMatch) {
+            ADClusterAnnotation *clusterlessAnnotation = [unmatchedAnnotations anyObject];
+            
+            if (clusterlessAnnotation) {
+                clusterlessAnnotation.cluster = array[0];
+                clusterlessAnnotation.coordinatePreAnimation = ((ADClusterAnnotation *)array[1]).coordinate;
+                
+                [unmatchedAnnotations removeObject:clusterlessAnnotation];
+                [offscreenAnnotations removeObject:clusterlessAnnotation];
+                [unMatchedClusters removeObject:clusterlessAnnotation.cluster];
+            }
+        }
     }
     
     //Find annotations for remaining unmatched clusters
@@ -291,22 +328,6 @@
         [unMatchedClusters removeObject:cluster];
     }
     
-    //Still need unmatched for a split into multiple from cluster
-    if (stillNeedsMatch.count) {
-        for (NSArray *array in stillNeedsMatch) {
-            ADClusterAnnotation *clusterlessAnnotation = [unmatchedAnnotations anyObject];
-            
-            if (clusterlessAnnotation) {
-                clusterlessAnnotation.cluster = array[0];
-                clusterlessAnnotation.coordinatePreAnimation = ((ADClusterAnnotation *)array[1]).coordinate;
-                
-                [unmatchedAnnotations removeObject:clusterlessAnnotation];
-                [offscreenAnnotations removeObject:clusterlessAnnotation];
-                [unMatchedClusters removeObject:clusterlessAnnotation.cluster];
-            }
-        }
-    }
-    
     matchedAnnotations = [NSMutableSet setWithSet:_annotationPool];
     [matchedAnnotations minusSet:unmatchedAnnotations];
     
@@ -353,7 +374,7 @@
         annotationToSelect = nil;
     }
     
-    
+    NSLog(@"Will Animate");
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         
         //Make sure they are in the offscreen position
@@ -434,9 +455,14 @@
             
             if (_finishedBlock) {
                 _finishedBlock(clusteredMapRect, YES, toRemove);
+                _finishedBlock = nil;
             }
         }];
     }];
+    
+    while (_finishedBlock) {
+        //Make the animation finish before starting the next operation
+    }
 }
 
 #if TS_TARGET_IOS

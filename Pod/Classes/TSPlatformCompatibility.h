@@ -18,6 +18,7 @@
 
 #if TS_TARGET_MAC
 #define UIView NSView
+#define UIEdgeInsetsMake NSEdgeInsetsMake
 #define UIGestureRecognizer NSGestureRecognizer
 #define UIPanGestureRecognizer NSPanGestureRecognizer
 #define UIGestureRecognizerDelegate NSGestureRecognizerDelegate

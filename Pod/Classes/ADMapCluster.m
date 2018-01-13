@@ -122,7 +122,7 @@
 
 #pragma mark Tree Mapping
 
-- (NSArray <NSArray <ADMapPointAnnotation *>*>*)splitAnnotations:(NSSet <ADMapPointAnnotation *> *)annotations centerPoint:(MKMapPoint)center {
+- (NSArray <NSSet <ADMapPointAnnotation *>*>*)splitAnnotations:(NSSet <ADMapPointAnnotation *> *)annotations centerPoint:(MKMapPoint)center {
     
     // compute coefficients
     

@@ -539,7 +539,22 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 }
 
 - (BOOL)shouldNotAnimate {
-    return (!self.superview || self.layer.animationKeys);
+    
+    // We are likley to be called on a non-main thread, so we guard our selves.
+    __block bool shouldNotAnimate = NO;
+    void(^checkShouldNotAnimate)(void) = ^() {
+        shouldNotAnimate = (!self.superview || self.layer.animationKeys);
+    };
+    
+    
+    if (NSThread.isMainThread) {
+        checkShouldNotAnimate();
+    }
+    else {
+        dispatch_sync(dispatch_get_main_queue(), checkShouldNotAnimate);
+    }
+    
+    return shouldNotAnimate;
 }
 
 - (void)splitClusterToOriginal:(ADClusterAnnotation *)clusterAnnotation {
@@ -565,7 +580,6 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
 }
 
 - (void)clusterVisibleMapRectForceRefresh:(BOOL)isNewCluster {
-    
     if ([self shouldNotAnimate]) {
         return;
     }
@@ -573,7 +587,6 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     if (isNewCluster) {
         _previousVisibleMapRectClustered = MKMapRectNull;
     }
-    
     
     [_preClusterOperationQueue addOperationWithBlock:^{
         

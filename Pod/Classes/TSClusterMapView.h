@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-#import "ADMapCluster.h"
-#import "ADClusterAnnotation.h"
-#import "TSClusterAnnotationView.h"
-#import "TSClusterAnimationOptions.h"
-#import "TSPlatformCompatibility.h"
+#import <DOCore/ADMapCluster.h>
+#import <DOCore/ADClusterAnnotation.h>
+#import <DOCore/TSClusterAnnotationView.h>
+#import <DOCore/TSClusterAnimationOptions.h>
+#import <DOCore/TSPlatformCompatibility.h>
 
 // Progress of cluster tree notification
 extern NSString * const KDTreeClusteringProgress;

@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-#import "ADMapCluster.h"
-#import "TSClusterAnnotationView.h"
+#import <DOCore/ADMapCluster.h>
+#import <DOCore/TSClusterAnnotationView.h>
 
 
 typedef NS_ENUM(NSUInteger, ADClusterAnnotationType) {

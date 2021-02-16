@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TSPlatformCompatibility.h"
+#import <DOCore/TSPlatformCompatibility.h>
 #if TS_TARGET_IOS
   #import <UIKit/UIKit.h>
 #endif

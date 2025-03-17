@@ -755,6 +755,19 @@ NSString * const KDTreeClusteringProgress = @"KDTreeClusteringProgress";
     [super selectAnnotation:annotation animated:animated];
 }
 
+- (void)deselectAnnotation:(id<MKAnnotation>)annotation animated:(BOOL)animated {
+    if ([_clusterableAnnotationsAdded containsObject:annotation]) {
+        for (ADClusterAnnotation *clusterAnnotation in self.visibleClusterAnnotations) {
+            if ([clusterAnnotation.originalAnnotations containsObject:annotation]) {
+                [super deselectAnnotation:clusterAnnotation animated:animated];
+                return;
+            }
+        }
+        return;
+    }
+    [super deselectAnnotation:annotation animated:animated];
+}
+
 - (MKAnnotationView *)filterInternalView:(MKAnnotationView *)view {
     
     if ([view isKindOfClass:[TSClusterAnnotationView class]]) {
